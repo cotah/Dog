@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-taloa-bg text-slate-800 antialiased;
+  font-family: var(--font-inter, Inter), system-ui, sans-serif;
+}
