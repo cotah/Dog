@@ -1,0 +1,5 @@
+-- ════════════════════════════════════════════════════════════
+-- TALOA — seed.sql
+-- Dados iniciais do banco (ex: vet_clinics de Dublin).
+-- Sera preenchido na Etapa 2 (Supabase + migrations).
+-- ════════════════════════════════════════════════════════════

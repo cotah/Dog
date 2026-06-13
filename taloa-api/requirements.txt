@@ -1,0 +1,40 @@
+# ════════════════════════════════════════════════════════════
+# taloa-api — Dependencias Python (FastAPI / Railway)
+# Versoes serao validadas no momento da instalacao (Etapa 2+).
+# ════════════════════════════════════════════════════════════
+
+# ── Core / Web framework ──────────────────────────────────────
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20         # upload de arquivos (fotos, multipart)
+
+# ── Config / Validacao ────────────────────────────────────────
+pydantic==2.10.4
+pydantic-settings==2.7.1
+
+# ── Banco / Auth (Supabase) ───────────────────────────────────
+supabase==2.11.0                 # cliente Python (PostgreSQL + Storage)
+pyjwt==2.10.1                    # validacao do JWT emitido pelo Supabase Auth
+
+# ── Agente de IA (Anthropic) ─────────────────────────────────
+anthropic==0.42.0
+
+# ── Email (Resend) ────────────────────────────────────────────
+resend==2.6.0
+
+# ── QR Codes + PDF ────────────────────────────────────────────
+qrcode[pil]==8.0                 # geracao de QR Codes
+reportlab==4.2.5                 # PDF A4 de etiquetas
+
+# ── Rate limiting ─────────────────────────────────────────────
+slowapi==0.1.9
+
+# ── HTTP client ───────────────────────────────────────────────
+httpx==0.28.1
+
+# ── Monitoramento (opcional) ─────────────────────────────────
+sentry-sdk[fastapi]==2.19.2
+
+# ── Dev / Testes ──────────────────────────────────────────────
+pytest==8.3.4
+pytest-asyncio==0.25.0
