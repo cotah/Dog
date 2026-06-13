@@ -1,35 +1,13 @@
-import { HeartHandshake, Stethoscope } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
 
 import { ContactOwnerButtons } from "@/components/public/ContactOwnerButtons";
+import { FoundReportSection } from "@/components/public/FoundReportSection";
 import { LostPetBanner } from "@/components/public/LostPetBanner";
 import { PetProfileCard } from "@/components/public/PetProfileCard";
 import { getPublicTag, logScan } from "@/lib/api/public";
 
 export const dynamic = "force-dynamic";
-
-// Botoes secundarios reutilizados nos estados active/lost
-function SecondaryActions({ tagCode }: { tagCode: string }) {
-  return (
-    <div className="grid grid-cols-2 gap-3">
-      <Link
-        href={`/found?tag=${tagCode}`}
-        className="flex h-12 items-center justify-center gap-2 rounded-input border border-slate-300 text-sm font-medium text-slate-600 hover:bg-slate-50"
-      >
-        <HeartHandshake className="h-4 w-4" />
-        I Found This Pet
-      </Link>
-      <Link
-        href="/emergency"
-        className="flex h-12 items-center justify-center gap-2 rounded-input border border-slate-300 text-sm font-medium text-slate-600 hover:bg-slate-50"
-      >
-        <Stethoscope className="h-4 w-4" />
-        Emergency Vets
-      </Link>
-    </div>
-  );
-}
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
@@ -149,7 +127,7 @@ export default async function TagPage({
 
       <ContactOwnerButtons contact={tag.contact} />
 
-      <SecondaryActions tagCode={tag.tag_code} />
+      <FoundReportSection tagCode={tag.tag_code} />
     </Shell>
   );
 }
