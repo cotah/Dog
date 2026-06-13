@@ -26,3 +26,9 @@ def send_found_alert(
         bool(found_area),
     )
     # TODO Etapa 14: enviar email real via Resend para owner_email
+
+
+def send_lead_notification(*, service_type: str) -> None:
+    """Avisa o admin de um novo lead. (Resend entra na Etapa 14.)"""
+    logger.info("Lead queued (service=%s)", service_type)
+    # TODO Etapa 14: notificar o admin via Resend
