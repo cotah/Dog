@@ -17,6 +17,12 @@ Monorepo com backend e frontend separados, pensado para um futuro app mobile:
 - **`supabase/`** — PostgreSQL + Storage. Fonte unica do schema (migrations + seed).
 - **Mobile (futuro)** — Expo/React Native vai consumir a MESMA API do FastAPI.
 
+> **SUPABASE PROJECT: `loopcoxvtboytwwjwoeg` (nome "Dog") — este e o unico banco da TALOA.**
+> **Nunca aplicar migrations em qualquer outro projeto Supabase.** O ref
+> `mrhzgxplamnkktbjbpok` que aparece no CLAUDE.md global e do projeto GBrain/gstack,
+> NAO da TALOA. Sempre confirmar o `project_id` contra a `SUPABASE_URL` do
+> `taloa-api/.env` antes de qualquer operacao no banco.
+
 ### Auth
 - O **Supabase Auth** emite o JWT (web e mobile logam pelo SDK do Supabase).
 - O **FastAPI valida** o JWT (via `SUPABASE_JWT_SECRET`) e aplica regras de negocio e de role.

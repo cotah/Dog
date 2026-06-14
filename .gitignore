@@ -64,3 +64,4 @@ logs/
 .playwright-mcp/
 etapa*-*.png
 
+.gstack/
