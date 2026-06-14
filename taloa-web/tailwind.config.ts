@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss";
 
-// Paleta da secao 10 do brief
+// Branding oficial aprovado (azul petroleo + laranja). Substitui o verde antigo.
 const config: Config = {
   content: [
     "./app/**/*.{ts,tsx}",
@@ -11,13 +11,16 @@ const config: Config = {
     extend: {
       colors: {
         taloa: {
-          primary: "#1A6B4A",
-          secondary: "#2D8C5E",
-          alert: "#C0392B",
-          warning: "#E67E22",
-          info: "#2D5F8A",
-          bg: "#F8FAF9",
-          admin: "#F1F5F4",
+          primary: "#1A3A5C", // azul petroleo escuro (cor principal)
+          secondary: "#2E86C1", // azul medio
+          accent: "#E67E22", // laranja (destaque / call-to-action)
+          alert: "#C0392B", // vermelho — perigo / pet perdido (mantido)
+          warning: "#E67E22", // laranja — avisos (alinhado ao accent)
+          info: "#2E86C1", // azul informativo (alinhado a secundaria)
+          dark: "#0D1F2D", // background escuro
+          light: "#FFFFFF", // texto claro
+          bg: "#F6F8FB", // fundo claro neutro (sem tom esverdeado)
+          admin: "#EEF2F6", // cinza-azulado do painel admin
         },
       },
       borderRadius: {

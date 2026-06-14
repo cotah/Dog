@@ -25,14 +25,14 @@ export function ScansChart({ data }: { data: ScanDaily[] }) {
       <div className="h-56 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 5, right: 5, left: -22, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eef2f1" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eef2f6" />
             <XAxis dataKey="label" tick={{ fontSize: 10 }} interval={4} />
             <YAxis allowDecimals={false} tick={{ fontSize: 10 }} />
             <Tooltip
               labelFormatter={(l) => `Day ${l}`}
               contentStyle={{ borderRadius: 8, fontSize: 12 }}
             />
-            <Bar dataKey="count" fill="#1A6B4A" radius={[3, 3, 0, 0]} />
+            <Bar dataKey="count" fill="#1A3A5C" radius={[3, 3, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
