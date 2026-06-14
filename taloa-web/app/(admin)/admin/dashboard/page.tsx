@@ -1,3 +1,6 @@
+import { QrCode } from "lucide-react";
+import Link from "next/link";
+
 import { LeadsPanel } from "@/components/admin/LeadsPanel";
 import { ScansChart } from "@/components/admin/ScansChart";
 import { TagsTable } from "@/components/admin/TagsTable";
@@ -53,7 +56,15 @@ export default async function AdminDashboard() {
           <h1 className="text-2xl font-bold text-taloa-primary">TALOA Admin</h1>
           <p className="text-sm text-slate-400">Control panel</p>
         </div>
-        <LogoutButton />
+        <div className="flex items-center gap-2">
+          <Link
+            href="/admin/tags/generate"
+            className="flex items-center gap-1 rounded-input bg-taloa-primary px-3 py-2 text-sm font-medium text-white hover:bg-taloa-secondary"
+          >
+            <QrCode className="h-4 w-4" /> Generate tags
+          </Link>
+          <LogoutButton />
+        </div>
       </header>
 
       {/* Metricas */}
