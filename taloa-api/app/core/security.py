@@ -32,6 +32,8 @@ def _decode_token(token: str) -> dict:
         header = jwt.get_unverified_header(token)
         alg = header.get("alg", "")
 
+        # leeway absorve pequeno clock skew entre o Supabase e este servidor
+        # (evita ImmatureSignatureError no iat / falso "expirado" no exp)
         if alg == "HS256":
             # Projeto legado: segredo compartilhado
             return jwt.decode(
@@ -39,6 +41,7 @@ def _decode_token(token: str) -> dict:
                 settings.SUPABASE_JWT_SECRET,
                 algorithms=["HS256"],
                 audience="authenticated",
+                leeway=30,
             )
 
         # Padrao atual: chave assimetrica (ES256/RS256) via JWKS
@@ -48,6 +51,7 @@ def _decode_token(token: str) -> dict:
             signing_key.key,
             algorithms=["ES256", "RS256"],
             audience="authenticated",
+            leeway=30,
         )
     except jwt.PyJWTError:
         raise _INVALID
