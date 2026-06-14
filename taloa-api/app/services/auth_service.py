@@ -15,6 +15,7 @@ from app.schemas.auth import (
     SignupRequest,
     SignupResponse,
 )
+from app.services import email_service
 
 
 def _now_iso() -> str:
@@ -145,5 +146,12 @@ def activate_tag(tag_code: str, data: ActivateRequest) -> ActivateResponse:
             "activated_at": _now_iso(),
         }
     ).eq("tag_code", tag_code).execute()
+
+    # 6. Boas-vindas (best-effort; nunca quebra a ativacao)
+    email_service.send_welcome(
+        owner_email=data.owner.email,
+        pet_name=data.pet.name,
+        tag_code=tag_code,
+    )
 
     return ActivateResponse(user_id=user_id, pet_id=pet["id"], tag_code=tag_code)

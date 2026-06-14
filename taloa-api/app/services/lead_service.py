@@ -17,6 +17,7 @@ def create_lead(user: CurrentUser, data: LeadCreate) -> None:
             "status": "new",
         }
     ).execute()
+    # Lead do dashboard: o dono ja esta logado (sem nome de contato avulso).
     email_service.send_lead_notification(service_type=data.service_type)
 
 
@@ -55,4 +56,7 @@ def create_public_lead(data: PublicLeadCreate) -> None:
         }
     ).execute()
 
-    email_service.send_lead_notification(service_type=data.service_type)
+    email_service.send_lead_notification(
+        service_type=data.service_type,
+        contact_name=data.contact_name,
+    )
