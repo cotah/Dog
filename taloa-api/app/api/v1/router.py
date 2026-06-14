@@ -12,6 +12,7 @@ from app.api.v1.routes import (
     scans,
     tags,
     uploads,
+    vets,
 )
 
 api_router = APIRouter(prefix="/v1")
@@ -25,3 +26,4 @@ api_router.include_router(pets.router)
 api_router.include_router(leads.router)
 api_router.include_router(admin.router)
 api_router.include_router(admin_tags.router)
+api_router.include_router(vets.router)

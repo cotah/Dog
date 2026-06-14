@@ -1,6 +1,14 @@
 import type { PublicTag } from "@/types/tag";
+import type { PublicVet } from "@/types/vet";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
+// Lista publica de clinicas veterinarias ativas (Emergency Directory).
+export async function getVetClinics(): Promise<PublicVet[]> {
+  const res = await fetch(`${API_URL}/v1/vets`, { cache: "no-store" });
+  if (!res.ok) throw new Error("Failed to load vet clinics");
+  return res.json();
+}
 
 // Busca os dados publicos da tag (sem auth). Retorna null se nao existir.
 export async function getPublicTag(tagCode: string): Promise<PublicTag | null> {

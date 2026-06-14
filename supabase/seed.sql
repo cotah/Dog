@@ -42,3 +42,39 @@ UPDATE public.tags SET pet_id='cccccccc-0000-4000-8000-000000000003', owner_id='
 -- ── Lost report para TAL-000003 ──
 INSERT INTO public.lost_reports (pet_id, tag_code, last_seen_at, last_seen_area, description, status)
 VALUES ('cccccccc-0000-4000-8000-000000000003', 'TAL-000003', now() - interval '1 day', 'Phoenix Park, Dublin 8', 'Last seen near the main gate, wearing a TALOA tag.', 'active');
+
+-- ════════════════════════════════════════════════════════════
+-- vet_clinics — clinicas reais de Dublin (Emergency Directory, Etapa 10)
+-- Telefones obtidos por pesquisa publica. CONFIRMAR antes do launch.
+-- ════════════════════════════════════════════════════════════
+INSERT INTO public.vet_clinics
+  (name, phone, address, area, species_supported, emergency_24h, hours, website, notes, is_verified, is_active)
+VALUES
+  ('Pet Emergency Hospital (UCD)', '01 260 9920', 'UCD Veterinary Hospital, Belfield, Dublin 4, D04 W6F6', 'Dublin 4',
+   ARRAY['dog','cat','rabbit','small_mammal'], true,
+   'Weeknights 7pm-8am; weekends & bank holidays 24h', 'https://petemergencyhospital.ie',
+   'Out-of-hours emergency hospital. Exotics on referral.', true, true),
+  ('Veterinary Specialists Ireland - Exotics', '046 955 7551', 'Clonmahon, Summerhill, Co. Meath, A83 EV27', 'Co. Meath (Dublin referral)',
+   ARRAY['reptile','bird','rabbit','small_mammal'], true,
+   '24/7 emergency & critical care for exotics', 'https://vetspecialists.ie',
+   'Specialist exotics referral hospital - reptiles, birds, small mammals.', true, true),
+  ('Palmerstown Veterinary Hospital', '01 623 7044', 'Old Lucan Road, Palmerstown Lower, Dublin 20, D20 HC86', 'Dublin 20',
+   ARRAY['dog','cat','reptile','bird','rabbit','small_mammal'], false,
+   'Mon-Sat, daytime', 'https://palmerstownvets.ie',
+   'Treats exotics: reptiles, birds and small mammals.', true, true),
+  ('Animal Welfare Veterinary Clinic', '01 671 4303', '40 Charlemont Street, Dublin 2', 'Dublin 2',
+   ARRAY['dog','cat'], false, 'Mon-Sat, daytime', NULL, NULL, true, true),
+  ('St Francis Veterinary Clinic', '01 473 1947', 'Dublin 8', 'Dublin 8',
+   ARRAY['dog','cat','small_mammal'], false, 'Mon-Sat, daytime', 'https://stfrancis.ie', NULL, true, true),
+  ('Beechwood Vets', '01 491 2870', 'The Mews, Rear 27-29 Dunville Avenue, Ranelagh, Dublin 6, D06 C6H6', 'Dublin 6',
+   ARRAY['dog','cat','rabbit','small_mammal'], false, 'Mon-Sat, daytime', 'https://beechwoodvets.ie', NULL, true, true),
+  ('Sandymount Pet Hospital', '01 668 8188', '19 Sandymount Avenue, Ballsbridge, Dublin 4', 'Dublin 4',
+   ARRAY['dog','cat','small_mammal'], false, 'Mon-Sat, daytime', NULL, NULL, true, true),
+  ('Village Vets Sandyford', '01 849 9973', 'Sandyford, Dublin 18', 'Dublin 18',
+   ARRAY['dog','cat','rabbit','small_mammal'], false, 'Mon-Sat, daytime', 'https://villagevets.ie', NULL, true, true),
+  ('MyVet Lucan Hospital (Emergency)', '01 517 5213', 'Lucan, Co. Dublin', 'Co. Dublin (Lucan)',
+   ARRAY['dog','cat','small_mammal'], true, '24-hour emergency service, 365 days', 'https://www.myvet.ie/emergencies',
+   'Out-of-hours emergency hospital for the Dublin area.', true, true),
+  ('Nutgrove Veterinary Hospital', '01 295 1202', 'Nutgrove, Dublin 14', 'Dublin 14',
+   ARRAY['dog','cat','small_mammal'], false, 'Mon-Sat, daytime', 'https://nutgrovevets.ie',
+   '24h cover via emergency partner out-of-hours.', true, true);
