@@ -30,7 +30,7 @@ export function LeadsPanel({ leads }: { leads: AdminLeadRow[] }) {
           <thead>
             <tr className="border-b text-xs uppercase text-slate-400">
               <th className="py-2 pr-3">Service</th>
-              <th className="py-2 pr-3">Owner</th>
+              <th className="py-2 pr-3">Contact</th>
               <th className="py-2 pr-3">Pet</th>
               <th className="py-2 pr-3">Date</th>
               <th className="py-2 pr-3">Status</th>
@@ -43,7 +43,18 @@ export function LeadsPanel({ leads }: { leads: AdminLeadRow[] }) {
                   {l.service_type.replace(/_/g, " ")}
                 </td>
                 <td className="py-2 pr-3 text-slate-500">
-                  {l.owner_name ?? l.owner_email ?? "—"}
+                  {l.contact_name ?? l.owner_name ?? "—"}
+                  {(l.contact_email ?? l.owner_email) && (
+                    <span className="block text-xs text-slate-400">
+                      {l.contact_email ?? l.owner_email}
+                      {l.contact_phone ? ` · ${l.contact_phone}` : ""}
+                    </span>
+                  )}
+                  {l.message && (
+                    <span className="mt-0.5 block max-w-xs truncate text-xs italic text-slate-400">
+                      “{l.message}”
+                    </span>
+                  )}
                 </td>
                 <td className="py-2 pr-3">{l.pet_name ?? "—"}</td>
                 <td className="py-2 pr-3 text-slate-500">

@@ -34,6 +34,10 @@ class AdminLeadRow(BaseModel):
     owner_name: str | None = None
     owner_email: str | None = None
     pet_name: str | None = None
+    contact_name: str | None = None
+    contact_email: str | None = None
+    contact_phone: str | None = None
+    message: str | None = None
     created_at: str | None = None
 
 

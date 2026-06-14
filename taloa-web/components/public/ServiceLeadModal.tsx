@@ -1,0 +1,137 @@
+"use client";
+
+import { X } from "lucide-react";
+import { useState } from "react";
+
+import { createPublicLead } from "@/lib/api/leads";
+
+const inputClass =
+  "w-full rounded-input border border-slate-300 px-3 py-2.5 outline-none focus:border-taloa-primary";
+const labelClass = "mb-1 block text-sm font-medium text-slate-600";
+
+export function ServiceLeadModal({
+  serviceType,
+  serviceLabel,
+  petName,
+  tagCode,
+  onClose,
+  onSuccess,
+}: {
+  serviceType: string;
+  serviceLabel: string;
+  petName: string;
+  tagCode: string;
+  onClose: () => void;
+  onSuccess: () => void;
+}) {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  function set<K extends keyof typeof form>(key: K, value: string) {
+    setForm((p) => ({ ...p, [key]: value }));
+  }
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    setError(null);
+    try {
+      await createPublicLead({
+        tag_code: tagCode,
+        service_type: serviceType,
+        contact_name: form.name,
+        contact_email: form.email,
+        contact_phone: form.phone || undefined,
+        message: form.message || undefined,
+      });
+      onSuccess();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center">
+      <div className="max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-card bg-white p-5 shadow-lg sm:rounded-card">
+        <div className="mb-1 flex items-center justify-between">
+          <h2 className="text-lg font-bold text-slate-800">{serviceLabel}</h2>
+          <button onClick={onClose} aria-label="Close" className="text-slate-400">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        <p className="mb-4 text-sm text-slate-500">
+          Tell us a bit about you and we&apos;ll help with {petName}.
+        </p>
+
+        <form onSubmit={onSubmit} className="flex flex-col gap-3">
+          <div>
+            <label className={labelClass}>Name</label>
+            <input
+              className={inputClass}
+              value={form.name}
+              onChange={(e) => set("name", e.target.value)}
+              placeholder="Your name"
+              required
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Email</label>
+            <input
+              className={inputClass}
+              type="email"
+              value={form.email}
+              onChange={(e) => set("email", e.target.value)}
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Phone</label>
+            <input
+              className={inputClass}
+              type="tel"
+              value={form.phone}
+              onChange={(e) => set("phone", e.target.value)}
+              placeholder="Optional"
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Message</label>
+            <textarea
+              className={`${inputClass} min-h-20 resize-none`}
+              value={form.message}
+              onChange={(e) => set("message", e.target.value)}
+              placeholder="Optional — anything we should know?"
+            />
+          </div>
+
+          {error && <p className="text-sm text-taloa-alert">{error}</p>}
+
+          <div className="mt-2 flex gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="h-12 flex-1 rounded-input border border-slate-300 font-medium text-slate-600 hover:bg-slate-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={busy}
+              className="h-12 flex-[2] rounded-input bg-taloa-primary font-semibold text-white hover:bg-taloa-secondary disabled:opacity-60"
+            >
+              {busy ? "Sending…" : "Send request"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

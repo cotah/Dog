@@ -102,6 +102,10 @@ def get_overview() -> AdminOverview:
             owner_name=(user_by_id.get(lead.get("owner_id")) or {}).get("name"),
             owner_email=(user_by_id.get(lead.get("owner_id")) or {}).get("email"),
             pet_name=(pet_by_id.get(lead.get("pet_id")) or {}).get("name"),
+            contact_name=lead.get("contact_name"),
+            contact_email=lead.get("contact_email"),
+            contact_phone=lead.get("contact_phone"),
+            message=lead.get("message"),
             created_at=lead.get("created_at"),
         )
         for lead in leads

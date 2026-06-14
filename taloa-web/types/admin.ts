@@ -32,6 +32,10 @@ export interface AdminLeadRow {
   owner_name: string | null;
   owner_email: string | null;
   pet_name: string | null;
+  contact_name: string | null;
+  contact_email: string | null;
+  contact_phone: string | null;
+  message: string | null;
   created_at: string | null;
 }
 

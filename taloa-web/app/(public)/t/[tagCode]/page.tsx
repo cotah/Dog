@@ -5,6 +5,7 @@ import { ContactOwnerButtons } from "@/components/public/ContactOwnerButtons";
 import { FoundReportSection } from "@/components/public/FoundReportSection";
 import { LostPetBanner } from "@/components/public/LostPetBanner";
 import { PetProfileCard } from "@/components/public/PetProfileCard";
+import { ServiceLeadsSection } from "@/components/public/ServiceLeadsSection";
 import { getPublicTag, logScan } from "@/lib/api/public";
 
 export const dynamic = "force-dynamic";
@@ -128,6 +129,11 @@ export default async function TagPage({
       <ContactOwnerButtons contact={tag.contact} />
 
       <FoundReportSection tagCode={tag.tag_code} />
+
+      {/* Servicos: discreto e so quando NAO esta perdido (foco na emergencia) */}
+      {tag.status === "active" && (
+        <ServiceLeadsSection petName={tag.pet.name} tagCode={tag.tag_code} />
+      )}
     </Shell>
   );
 }
