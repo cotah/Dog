@@ -11,6 +11,7 @@ class Metrics(BaseModel):
     total_pets: int
     total_users: int
     total_leads: int
+    pending_found: int = 0
 
 
 class ScanDaily(BaseModel):
@@ -38,6 +39,18 @@ class AdminLeadRow(BaseModel):
     contact_email: str | None = None
     contact_phone: str | None = None
     message: str | None = None
+    created_at: str | None = None
+
+
+class AdminFoundReportRow(BaseModel):
+    id: str
+    tag_code: str | None = None
+    pet_name: str | None = None
+    owner_email: str | None = None
+    found_area: str | None = None
+    notes: str | None = None
+    finder_phone: str | None = None
+    status: str | None = None
     created_at: str | None = None
 
 
@@ -69,6 +82,7 @@ class AdminOverview(BaseModel):
     scans_daily: list[ScanDaily]
     tags: list[AdminTagRow]
     leads: list[AdminLeadRow]
+    found_reports: list[AdminFoundReportRow]
     vets: list[VetClinic]
     users: list[AdminUserRow]
 

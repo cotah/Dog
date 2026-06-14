@@ -9,6 +9,7 @@ export interface Metrics {
   total_pets: number;
   total_users: number;
   total_leads: number;
+  pending_found: number;
 }
 
 export interface ScanDaily {
@@ -36,6 +37,18 @@ export interface AdminLeadRow {
   contact_email: string | null;
   contact_phone: string | null;
   message: string | null;
+  created_at: string | null;
+}
+
+export interface AdminFoundReportRow {
+  id: string;
+  tag_code: string | null;
+  pet_name: string | null;
+  owner_email: string | null;
+  found_area: string | null;
+  notes: string | null;
+  finder_phone: string | null;
+  status: string | null;
   created_at: string | null;
 }
 
@@ -67,6 +80,7 @@ export interface AdminOverview {
   scans_daily: ScanDaily[];
   tags: AdminTagRow[];
   leads: AdminLeadRow[];
+  found_reports: AdminFoundReportRow[];
   vets: VetClinic[];
   users: AdminUserRow[];
 }

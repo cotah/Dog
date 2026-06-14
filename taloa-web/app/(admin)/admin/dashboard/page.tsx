@@ -1,6 +1,7 @@
 import { QrCode } from "lucide-react";
 import Link from "next/link";
 
+import { FoundReportsPanel } from "@/components/admin/FoundReportsPanel";
 import { LeadsPanel } from "@/components/admin/LeadsPanel";
 import { ScansChart } from "@/components/admin/ScansChart";
 import { TagsTable } from "@/components/admin/TagsTable";
@@ -75,14 +76,20 @@ export default async function AdminDashboard() {
         <Metric label="Lost" value={m.lost} accent="text-taloa-alert" />
         <Metric label="Disabled" value={m.disabled} accent="text-slate-700" />
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Metric label="Pets" value={m.total_pets} />
         <Metric label="Users" value={m.total_users} />
         <Metric label="Leads" value={m.total_leads} />
+        <Metric
+          label="Open found reports"
+          value={m.pending_found}
+          accent={m.pending_found > 0 ? "text-taloa-alert" : "text-slate-800"}
+        />
       </div>
 
       <ScansChart data={data.scans_daily} />
       <TagsTable tags={data.tags} />
+      <FoundReportsPanel reports={data.found_reports} />
       <LeadsPanel leads={data.leads} />
       <VetsManager vets={data.vets} />
       <UsersList users={data.users} />
