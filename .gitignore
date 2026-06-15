@@ -18,6 +18,15 @@ dist/
 .vercel/
 *.tsbuildinfo
 next-env.d.ts
+
+# Service worker gerado pelo next-pwa (build artifact — nunca commitar)
+taloa-web/public/sw.js
+taloa-web/public/sw.js.map
+taloa-web/public/workbox-*.js
+taloa-web/public/workbox-*.js.map
+taloa-web/public/worker-*.js
+taloa-web/public/swe-worker-*.js
+taloa-web/public/fallback-*.js
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
