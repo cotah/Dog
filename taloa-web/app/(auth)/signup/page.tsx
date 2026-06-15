@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { apiFetch, ApiError } from "@/lib/api/client";
 import { createClient } from "@/lib/supabase/client";
+import { Spinner } from "@/components/ui/Spinner";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -152,9 +153,15 @@ export default function SignupPage() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 h-12 rounded-input bg-taloa-primary font-medium text-white hover:bg-taloa-secondary disabled:opacity-60"
+            className="mt-2 flex h-12 items-center justify-center gap-2 rounded-input bg-taloa-primary font-medium text-white hover:bg-taloa-secondary disabled:opacity-60"
           >
-            {loading ? "Creating…" : "Create account"}
+            {loading ? (
+              <>
+                <Spinner /> Creating…
+              </>
+            ) : (
+              "Create account"
+            )}
           </button>
         </form>
 

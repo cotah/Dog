@@ -1,4 +1,5 @@
 import { AlertTriangle } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { TaloaChat } from "@/components/ai/TaloaChat";
@@ -7,6 +8,12 @@ import { getVetClinics } from "@/lib/api/public";
 import type { PublicVet } from "@/types/vet";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Emergency Vets in Dublin — TALOA",
+  description:
+    "A directory of Dublin veterinary clinics, including 24-hour emergency care. Find a vet fast when your pet needs help.",
+};
 
 export default async function EmergencyPage() {
   let clinics: PublicVet[] = [];

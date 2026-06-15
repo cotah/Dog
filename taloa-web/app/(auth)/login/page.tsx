@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { createClient } from "@/lib/supabase/client";
+import { Spinner } from "@/components/ui/Spinner";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -74,9 +75,15 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 h-12 rounded-input bg-taloa-primary font-medium text-white hover:bg-taloa-secondary disabled:opacity-60"
+            className="mt-2 flex h-12 items-center justify-center gap-2 rounded-input bg-taloa-primary font-medium text-white hover:bg-taloa-secondary disabled:opacity-60"
           >
-            {loading ? "Logging in…" : "Log in"}
+            {loading ? (
+              <>
+                <Spinner /> Logging in…
+              </>
+            ) : (
+              "Log in"
+            )}
           </button>
         </form>
 

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
 
@@ -10,6 +11,35 @@ import { TaloaChat } from "@/components/ai/TaloaChat";
 import { getPublicTag, logScan } from "@/lib/api/public";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ tagCode: string }>;
+}): Promise<Metadata> {
+  const { tagCode } = await params;
+  try {
+    const tag = await getPublicTag(tagCode);
+    const name = tag?.pet?.name;
+    if (name) {
+      const lost = tag.status === "lost";
+      return {
+        title: lost
+          ? `${name} is lost — TALOA`
+          : `${name} — TALOA pet profile`,
+        description: lost
+          ? `${name} is missing. If you found this pet, you can contact the owner right away through TALOA.`
+          : `${name}'s TALOA safety profile. Found this pet? Reach the owner here.`,
+      };
+    }
+  } catch {
+    // cai no fallback
+  }
+  return {
+    title: "Pet profile — TALOA",
+    description: "A TALOA pet safety profile.",
+  };
+}
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (

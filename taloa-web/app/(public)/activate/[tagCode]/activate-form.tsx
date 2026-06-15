@@ -6,6 +6,7 @@ import { useRef, useState } from "react";
 import { activateTag, uploadPetPhoto } from "@/lib/api/activate";
 import { SPECIES_OPTIONS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
+import { Spinner } from "@/components/ui/Spinner";
 
 const inputClass =
   "w-full rounded-input border border-slate-300 px-3 py-3 outline-none focus:border-taloa-primary";
@@ -14,6 +15,8 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
   const [step, setStep] = useState<1 | 2>(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Validacao em tempo real (mostra feedback conforme o usuario interage)
+  const [touched, setTouched] = useState<{ email?: boolean; password?: boolean }>({});
 
   // Step 1 — owner
   const [name, setName] = useState("");
@@ -29,6 +32,10 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const passwordValid = password.length >= 8;
+  const step1Valid = Boolean(name && emailValid && phone && passwordValid);
 
   function goToStep2(e: React.FormEvent) {
     e.preventDefault();
@@ -118,14 +125,22 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
               onChange={(e) => setName(e.target.value)}
               required
             />
-            <input
-              className={inputClass}
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+            <div>
+              <input
+                className={`${inputClass} ${touched.email && !emailValid ? "border-taloa-alert" : ""}`}
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onBlur={() => setTouched((t) => ({ ...t, email: true }))}
+                required
+              />
+              {touched.email && !emailValid && (
+                <p className="mt-1 text-xs text-taloa-alert">
+                  Enter a valid email address.
+                </p>
+              )}
+            </div>
             <input
               className={inputClass}
               type="tel"
@@ -134,21 +149,32 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
               onChange={(e) => setPhone(e.target.value)}
               required
             />
-            <input
-              className={inputClass}
-              type="password"
-              placeholder="Password (min 8 characters)"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              minLength={8}
-              required
-            />
+            <div>
+              <input
+                className={`${inputClass} ${touched.password && !passwordValid ? "border-taloa-alert" : ""}`}
+                type="password"
+                placeholder="Password (min 8 characters)"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onBlur={() => setTouched((t) => ({ ...t, password: true }))}
+                minLength={8}
+                required
+              />
+              {password.length > 0 && (
+                <p
+                  className={`mt-1 text-xs ${passwordValid ? "text-taloa-secondary" : "text-slate-400"}`}
+                >
+                  {passwordValid ? "✓ Looks good" : `${password.length}/8 characters`}
+                </p>
+              )}
+            </div>
 
             {error && <p className="text-sm text-taloa-alert">{error}</p>}
 
             <button
               type="submit"
-              className="h-12 rounded-input bg-taloa-primary font-semibold text-white hover:bg-taloa-secondary"
+              disabled={!step1Valid}
+              className="h-12 rounded-input bg-taloa-primary font-semibold text-white hover:bg-taloa-secondary disabled:opacity-60"
             >
               Continue
             </button>
@@ -239,9 +265,15 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="h-12 flex-[2] rounded-input bg-taloa-primary font-semibold text-white hover:bg-taloa-secondary disabled:opacity-60"
+                className="flex h-12 flex-[2] items-center justify-center gap-2 rounded-input bg-taloa-primary font-semibold text-white hover:bg-taloa-secondary disabled:opacity-60"
               >
-                {loading ? "Activating…" : "Activate tag"}
+                {loading ? (
+                  <>
+                    <Spinner /> Activating…
+                  </>
+                ) : (
+                  "Activate tag"
+                )}
               </button>
             </div>
           </form>

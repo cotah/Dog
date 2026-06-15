@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 
 import { uploadPetPhoto } from "@/lib/api/activate";
 import { createFoundReport } from "@/lib/api/found";
+import { Spinner } from "@/components/ui/Spinner";
 
 const inputClass =
   "w-full rounded-input border border-slate-300 px-3 py-2.5 outline-none focus:border-taloa-primary";
@@ -148,9 +149,9 @@ export function FoundReportForm({
             type="button"
             onClick={onShareLocation}
             disabled={locLoading}
-            className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-input border border-taloa-primary font-medium text-taloa-primary hover:bg-taloa-primary/5 disabled:opacity-60"
+            className="mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-input border border-taloa-primary font-medium text-taloa-primary hover:bg-taloa-primary/5 disabled:opacity-60"
           >
-            <MapPin className="h-4 w-4" />
+            {locLoading ? <Spinner className="h-4 w-4" /> : <MapPin className="h-4 w-4" />}
             {locLoading ? "Getting location…" : "Share My Location"}
           </button>
         )}
@@ -162,9 +163,15 @@ export function FoundReportForm({
       <button
         type="submit"
         disabled={loading}
-        className="h-12 rounded-input bg-taloa-primary font-semibold text-white hover:bg-taloa-secondary disabled:opacity-60"
+        className="flex h-12 items-center justify-center gap-2 rounded-input bg-taloa-primary font-semibold text-white hover:bg-taloa-secondary disabled:opacity-60"
       >
-        {loading ? "Sending…" : "Notify the owner"}
+        {loading ? (
+          <>
+            <Spinner /> Sending…
+          </>
+        ) : (
+          "Notify the owner"
+        )}
       </button>
     </form>
   );

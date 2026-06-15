@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { getPublicTag } from "@/lib/api/public";
@@ -5,6 +6,12 @@ import { getPublicTag } from "@/lib/api/public";
 import { ActivateForm } from "./activate-form";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Activate your TALOA tag",
+  description:
+    "Set up your pet's TALOA safety profile in two quick steps so anyone who finds them can reach you.",
+};
 
 function Centered({ children }: { children: React.ReactNode }) {
   return (

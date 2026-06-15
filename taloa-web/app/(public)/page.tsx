@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
-// Landing placeholder — sera construida na Etapa 8.
+export const metadata: Metadata = {
+  title: "TALOA — Smart Safety for Pets in Dublin",
+  description:
+    "TALOA gives your pet a smart safety tag. If they're ever lost, whoever finds them can reach you in seconds. Starting in Dublin.",
+};
+
 export default function HomePage() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-8 text-center">

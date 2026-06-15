@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { useState } from "react";
 
 import { createPublicLead } from "@/lib/api/leads";
+import { Spinner } from "@/components/ui/Spinner";
 
 const inputClass =
   "w-full rounded-input border border-slate-300 px-3 py-2.5 outline-none focus:border-taloa-primary";
@@ -125,9 +126,15 @@ export function ServiceLeadModal({
             <button
               type="submit"
               disabled={busy}
-              className="h-12 flex-[2] rounded-input bg-taloa-primary font-semibold text-white hover:bg-taloa-secondary disabled:opacity-60"
+              className="flex h-12 flex-[2] items-center justify-center gap-2 rounded-input bg-taloa-primary font-semibold text-white hover:bg-taloa-secondary disabled:opacity-60"
             >
-              {busy ? "Sending…" : "Send request"}
+              {busy ? (
+                <>
+                  <Spinner /> Sending…
+                </>
+              ) : (
+                "Send request"
+              )}
             </button>
           </div>
         </form>

@@ -163,13 +163,13 @@ export function TaloaChat({
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Type your question…"
                 disabled={streaming}
-                className="h-11 flex-1 rounded-input border border-slate-300 px-3 outline-none focus:border-taloa-primary disabled:bg-slate-50"
+                className="h-12 flex-1 rounded-input border border-slate-300 px-3 outline-none focus:border-taloa-primary disabled:bg-slate-50"
               />
               <button
                 type="submit"
                 disabled={streaming || !input.trim()}
                 aria-label="Send"
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-input bg-taloa-primary text-white hover:bg-taloa-secondary disabled:opacity-50"
+                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-input bg-taloa-primary text-white hover:bg-taloa-secondary disabled:opacity-50"
               >
                 <Send className="h-5 w-5" />
               </button>
