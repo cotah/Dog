@@ -49,5 +49,12 @@ export default withSentryConfig(finalConfig, {
   widenClientFileUpload: true,
   // Remove logs do SDK do bundle de producao (menor + mais limpo).
   disableLogger: true,
+  // Source maps: faz upload pro Sentry (stack traces legiveis) e APAGA do
+  // bundle publico (usuarios nao veem o codigo-fonte). O upload so acontece
+  // quando SENTRY_AUTH_TOKEN existe no ambiente do build (Vercel); sem o token
+  // os maps sao apenas apagados — nunca servidos publicamente.
+  sourcemaps: {
+    deleteSourcemapsAfterUpload: true,
+  },
 });
 
