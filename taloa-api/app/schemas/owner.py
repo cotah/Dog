@@ -65,10 +65,23 @@ class FoundReportSummary(BaseModel):
     created_at: str | None = None
 
 
+class PawTransaction(BaseModel):
+    points: int
+    reason: str
+    created_at: str | None = None
+
+
+class PawPointsSummary(BaseModel):
+    total: int = 0
+    total_earned: int = 0
+    transactions: list[PawTransaction] = []
+
+
 class DashboardResponse(BaseModel):
     owner: OwnerInfo
     pets: list[PetSummary]
     pending_found_reports: list[FoundReportSummary]
+    paw_points: PawPointsSummary = PawPointsSummary()
 
 
 class PetUpdate(BaseModel):

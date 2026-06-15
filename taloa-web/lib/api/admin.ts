@@ -28,3 +28,10 @@ export function updateUserRole(userId: string, role: string) {
     body: JSON.stringify({ role }),
   });
 }
+
+export function updateTagType(tagCode: string, tagType: string) {
+  return apiFetch(`/v1/admin/tags/${tagCode}`, {
+    method: "PATCH",
+    body: JSON.stringify({ tag_type: tagType }),
+  });
+}

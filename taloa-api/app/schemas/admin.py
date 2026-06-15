@@ -22,6 +22,7 @@ class ScanDaily(BaseModel):
 class AdminTagRow(BaseModel):
     tag_code: str
     status: str
+    tag_type: str | None = None
     pet_name: str | None = None
     owner_email: str | None = None
     activated_at: str | None = None
@@ -122,6 +123,10 @@ class VetUpdate(BaseModel):
 
 class UserRoleUpdate(BaseModel):
     role: str
+
+
+class TagTypeUpdate(BaseModel):
+    tag_type: str
 
 
 class OkResponse(BaseModel):

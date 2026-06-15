@@ -20,6 +20,7 @@ export interface ScanDaily {
 export interface AdminTagRow {
   tag_code: string;
   status: TagStatus;
+  tag_type: string | null;
   pet_name: string | null;
   owner_email: string | null;
   activated_at: string | null;

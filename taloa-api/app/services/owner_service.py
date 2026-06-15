@@ -11,10 +11,12 @@ from app.schemas.owner import (
     FoundReportSummary,
     LastScan,
     OwnerInfo,
+    PawPointsSummary,
     PetSummary,
     PetUpdate,
     TagInfo,
 )
+from app.services import paw_points_service
 
 PET_FIELDS = {
     "name",
@@ -183,6 +185,7 @@ def get_dashboard(user: CurrentUser) -> DashboardResponse:
         owner=OwnerInfo(name=owner.get("name"), email=owner.get("email")),
         pets=pets,
         pending_found_reports=pending,
+        paw_points=PawPointsSummary(**paw_points_service.get_summary(user.id)),
     )
 
 
@@ -224,7 +227,7 @@ def mark_found(user: CurrentUser, pet_id: str) -> str:
 
 def update_pet(user: CurrentUser, pet_id: str, data: PetUpdate) -> None:
     sb = get_service_client()
-    _get_owned_pet(sb, user, pet_id)
+    pet = _get_owned_pet(sb, user, pet_id)
 
     payload = data.model_dump(exclude_unset=True)
     pet_update = {k: v for k, v in payload.items() if k in PET_FIELDS}
@@ -249,3 +252,14 @@ def update_pet(user: CurrentUser, pet_id: str, data: PetUpdate) -> None:
             sb.table("pet_profiles").insert(
                 {"pet_id": pet_id, **prof_update}
             ).execute()
+
+    # Paw Points: avalia foto / vet / perfil 100% (idempotente). Os pontos vao
+    # para o DONO do pet (nao para um admin que esteja editando).
+    fresh_pet = sb.table("pets").select("*").eq("id", pet_id).limit(1).execute()
+    fresh_prof = (
+        sb.table("pet_profiles").select("*").eq("pet_id", pet_id).limit(1).execute()
+    )
+    if fresh_pet.data:
+        p = fresh_pet.data[0]
+        prof = fresh_prof.data[0] if fresh_prof.data else {}
+        paw_points_service.evaluate_pet(p.get("owner_id"), p, prof)

@@ -6,6 +6,7 @@ from app.schemas.admin import (
     AdminOverview,
     LeadStatusUpdate,
     OkResponse,
+    TagTypeUpdate,
     UserRoleUpdate,
     VetCreate,
     VetUpdate,
@@ -41,4 +42,10 @@ def update_vet(vet_id: str, body: VetUpdate) -> OkResponse:
 @router.patch("/users/{user_id}", response_model=OkResponse)
 def update_user_role(user_id: str, body: UserRoleUpdate) -> OkResponse:
     admin_service.update_user_role(user_id, body.role)
+    return OkResponse()
+
+
+@router.patch("/tags/{tag_code}", response_model=OkResponse)
+def update_tag_type(tag_code: str, body: TagTypeUpdate) -> OkResponse:
+    admin_service.update_tag_type(tag_code, body.tag_type)
     return OkResponse()

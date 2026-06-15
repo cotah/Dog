@@ -3,6 +3,7 @@ import { Bell, PawPrint } from "lucide-react";
 import Image from "next/image";
 
 import { TaloaChat } from "@/components/ai/TaloaChat";
+import { PawPointsCard } from "@/components/owner/PawPointsCard";
 import { PetCard } from "@/components/owner/PetCard";
 import { ServiceInterest } from "@/components/owner/ServiceInterest";
 import { apiFetchServer } from "@/lib/api/server";
@@ -109,6 +110,9 @@ export default async function OwnerDashboard() {
       ) : (
         data.pets.map((pet) => <PetCard key={pet.id} pet={pet} />)
       )}
+
+      {/* Paw Points (Etapa 20) */}
+      <PawPointsCard data={data.paw_points} />
 
       {/* Interesse em servicos */}
       <ServiceInterest petId={firstPet?.id} tagCode={firstPet?.tag?.tag_code} />

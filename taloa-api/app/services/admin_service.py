@@ -21,6 +21,13 @@ from app.schemas.admin import (
 
 LEAD_STATUSES = {"new", "contacted", "converted", "lost"}
 ROLES = {"owner", "admin", "partner"}
+TAG_TYPES = {
+    "collar_tag",
+    "cat_collar_tag",
+    "travel_id",
+    "habitat_id",
+    "emergency_card",
+}
 
 
 def get_overview() -> AdminOverview:
@@ -97,6 +104,7 @@ def get_overview() -> AdminOverview:
         AdminTagRow(
             tag_code=t["tag_code"],
             status=t["status"],
+            tag_type=t.get("tag_type"),
             pet_name=(pet_by_id.get(t.get("pet_id")) or {}).get("name"),
             owner_email=(user_by_id.get(t.get("owner_id")) or {}).get("email"),
             activated_at=t.get("activated_at"),
@@ -197,3 +205,10 @@ def update_user_role(user_id: str, role: str) -> None:
         raise HTTPException(status_code=400, detail="Role invalido")
     sb = get_service_client()
     sb.table("users").update({"role": role}).eq("id", user_id).execute()
+
+
+def update_tag_type(tag_code: str, tag_type: str) -> None:
+    if tag_type not in TAG_TYPES:
+        raise HTTPException(status_code=400, detail="tag_type invalido")
+    sb = get_service_client()
+    sb.table("tags").update({"tag_type": tag_type}).eq("tag_code", tag_code).execute()

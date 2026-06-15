@@ -15,7 +15,7 @@ from app.schemas.auth import (
     SignupRequest,
     SignupResponse,
 )
-from app.services import email_service
+from app.services import email_service, paw_points_service
 
 
 def _now_iso() -> str:
@@ -147,7 +147,11 @@ def activate_tag(tag_code: str, data: ActivateRequest) -> ActivateResponse:
         }
     ).eq("tag_code", tag_code).execute()
 
-    # 6. Boas-vindas (best-effort; nunca quebra a ativacao)
+    # 6. Paw Points: +100 pela 1a ativacao da tag, +20 se ja tem foto.
+    paw_points_service.award(user_id, 100, "tag_activation", tag_code)
+    paw_points_service.evaluate_pet(user_id, pet, {})
+
+    # 7. Boas-vindas (best-effort; nunca quebra a ativacao)
     email_service.send_welcome(
         owner_email=data.owner.email,
         pet_name=data.pet.name,

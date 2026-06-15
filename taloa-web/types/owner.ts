@@ -62,10 +62,23 @@ export interface OwnerInfo {
   email: string | null;
 }
 
+export interface PawTransaction {
+  points: number;
+  reason: string;
+  created_at: string | null;
+}
+
+export interface PawPointsSummary {
+  total: number;
+  total_earned: number;
+  transactions: PawTransaction[];
+}
+
 export interface Dashboard {
   owner: OwnerInfo;
   pets: PetSummary[];
   pending_found_reports: FoundReportSummary[];
+  paw_points: PawPointsSummary;
 }
 
 export interface PetUpdatePayload {

@@ -15,6 +15,7 @@ from app.core.security import get_current_user
 from app.core.supabase import get_service_client
 from app.schemas.auth import CurrentUser
 from app.schemas.billing import SubscriptionOut
+from app.services import paw_points_service
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -214,6 +215,28 @@ def _mark_canceled(sub: dict) -> None:
     ).execute()
 
 
+def _award_renewal(invoice: dict) -> None:
+    """+30 Paw Points por renovacao mensal (so ciclos recorrentes, nao a 1a)."""
+    if invoice.get("billing_reason") != "subscription_cycle":
+        return
+    customer_id = invoice.get("customer")
+    if not customer_id:
+        return
+    sb = get_service_client()
+    u = (
+        sb.table("users")
+        .select("id")
+        .eq("stripe_customer_id", customer_id)
+        .limit(1)
+        .execute()
+    )
+    if not u.data:
+        return
+    paw_points_service.award(
+        u.data[0]["id"], 30, "subscription_renewal", invoice.get("id")
+    )
+
+
 def handle_event(payload: bytes, sig_header: str) -> dict:
     """Verifica a assinatura e processa o evento do Stripe."""
     try:
@@ -233,6 +256,8 @@ def handle_event(payload: bytes, sig_header: str) -> dict:
         _upsert_subscription(obj)
     elif event_type == "customer.subscription.deleted":
         _mark_canceled(obj)
+    elif event_type == "invoice.paid":
+        _award_renewal(obj)
     # checkout.session.completed (subscription) ja vem coberto pelo
     # customer.subscription.created. Pagamento unico (premium_tag) nao gera
     # subscription — apenas confirma o pagamento, sem registro recorrente.
