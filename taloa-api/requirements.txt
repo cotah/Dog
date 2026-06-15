@@ -30,6 +30,9 @@ reportlab==4.2.5                 # PDF A4 de etiquetas
 # ── Rate limiting ─────────────────────────────────────────────
 slowapi==0.1.9
 
+# ── Pagamentos (Stripe) ───────────────────────────────────────
+stripe==14.4.1                   # subscriptions, checkout, webhooks
+
 # ── HTTP client ───────────────────────────────────────────────
 httpx==0.28.1
 

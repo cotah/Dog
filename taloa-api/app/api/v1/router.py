@@ -6,6 +6,7 @@ from app.api.v1.routes import (
     admin_tags,
     ai,
     auth,
+    billing,
     found,
     leads,
     owner,
@@ -14,6 +15,7 @@ from app.api.v1.routes import (
     tags,
     uploads,
     vets,
+    webhooks,
 )
 
 api_router = APIRouter(prefix="/v1")
@@ -29,3 +31,5 @@ api_router.include_router(admin.router)
 api_router.include_router(admin_tags.router)
 api_router.include_router(vets.router)
 api_router.include_router(ai.router)
+api_router.include_router(billing.router)
+api_router.include_router(webhooks.router)

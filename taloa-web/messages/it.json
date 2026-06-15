@@ -217,5 +217,26 @@
     "small_mammal": "Small mammal",
     "fish": "Fish",
     "other": "Other"
+  },
+  "pricing": {
+    "metaTitle": "TALOA Plans & Pricing",
+    "metaDescription": "Choose a TALOA plan and keep your pet safe. Free to start; upgrade for scan alerts, the vet directory, premium tags and more.",
+    "back": "← TALOA",
+    "title": "Choose your plan",
+    "subtitle": "Start free. Upgrade any time for more pets, smart alerts and premium perks.",
+    "free": "Free",
+    "perMonth": "/mo",
+    "oneTime": "one-time",
+    "mostPopular": "Most popular",
+    "subscribe": "Subscribe",
+    "getStarted": "Get started",
+    "buy": "Buy now",
+    "maxPets": "{count, plural, one {# pet} other {# pets}}",
+    "premiumTagDesc": "A premium-quality TALOA tag without a subscription.",
+    "features": {
+      "free": ["Basic pet profile", "Lost Mode", "Secure owner contact", "QR + NFC tag"],
+      "plus": ["Everything in Free", "Scan alerts", "Scan history", "Vet directory", "Basic AI assistant", "Partner discounts"],
+      "club": ["Everything in Plus", "Premium tag included", "Welcome Kit", "Emergency Card", "Travel ID", "Full AI assistant", "Paw Points", "Quarterly Care Drop"]
+    }
   }
 }

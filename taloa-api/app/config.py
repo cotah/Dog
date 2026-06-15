@@ -31,6 +31,10 @@ class Settings(BaseSettings):
     RESEND_API_KEY: str = ""
     RESEND_FROM_EMAIL: str = "hello@taloa.ie"
 
+    # ── Stripe (Etapa 18) ──
+    STRIPE_SECRET_KEY: str = ""
+    STRIPE_WEBHOOK_SECRET: str = ""
+
     # ── Sentry (opcional) ──
     SENTRY_DSN: str = ""
 
