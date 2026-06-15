@@ -26,6 +26,7 @@ taloa-web/public/workbox-*.js
 taloa-web/public/workbox-*.js.map
 taloa-web/public/worker-*.js
 taloa-web/public/swe-worker-*.js
+taloa-web/public/swe-worker-*.js.map
 taloa-web/public/fallback-*.js
 npm-debug.log*
 yarn-debug.log*
