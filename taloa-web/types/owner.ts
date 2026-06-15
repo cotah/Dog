@@ -10,6 +10,7 @@ export interface LastScan {
 export interface TagInfo {
   tag_code: string;
   status: TagStatus;
+  tag_type: string | null;
 }
 
 export interface PetSummary {
@@ -27,8 +28,21 @@ export interface PetSummary {
   behaviour: string | null;
   public_notes: string | null;
   emergency_notes: string | null;
+  vet_name: string | null;
   show_phone: boolean;
   show_email: boolean;
+  // campos por tag_type (Etapa 19)
+  travel_notes: string | null;
+  airline_approved: boolean | null;
+  habitat_temp_min: number | null;
+  habitat_temp_max: number | null;
+  feeding_schedule: string | null;
+  handling_notes: string | null;
+  lighting_notes: string | null;
+  humidity_notes: string | null;
+  critical_conditions: string | null;
+  critical_medication: string | null;
+  blood_type: string | null;
   tag: TagInfo | null;
   last_scan: LastScan | null;
 }
@@ -68,6 +82,19 @@ export interface PetUpdatePayload {
   behaviour?: string | null;
   public_notes?: string | null;
   emergency_notes?: string | null;
+  vet_name?: string | null;
   show_phone?: boolean;
   show_email?: boolean;
+  // campos por tag_type (Etapa 19)
+  travel_notes?: string | null;
+  airline_approved?: boolean | null;
+  habitat_temp_min?: number | null;
+  habitat_temp_max?: number | null;
+  feeding_schedule?: string | null;
+  handling_notes?: string | null;
+  lighting_notes?: string | null;
+  humidity_notes?: string | null;
+  critical_conditions?: string | null;
+  critical_medication?: string | null;
+  blood_type?: string | null;
 }

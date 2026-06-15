@@ -32,8 +32,21 @@ PROFILE_FIELDS = {
     "behaviour",
     "public_notes",
     "emergency_notes",
+    "vet_name",
     "show_phone",
     "show_email",
+    # campos por tag_type (Etapa 19)
+    "travel_notes",
+    "airline_approved",
+    "habitat_temp_min",
+    "habitat_temp_max",
+    "feeding_schedule",
+    "handling_notes",
+    "lighting_notes",
+    "humidity_notes",
+    "critical_conditions",
+    "critical_medication",
+    "blood_type",
 }
 
 
@@ -54,7 +67,7 @@ def _get_owned_pet(sb, user: CurrentUser, pet_id: str) -> dict:
 def _tag_for_pet(sb, pet_id: str) -> dict | None:
     res = (
         sb.table("tags")
-        .select("tag_code, status")
+        .select("tag_code, status, tag_type")
         .eq("pet_id", pet_id)
         .limit(1)
         .execute()
@@ -124,8 +137,20 @@ def get_dashboard(user: CurrentUser) -> DashboardResponse:
                 behaviour=prof.get("behaviour"),
                 public_notes=prof.get("public_notes"),
                 emergency_notes=prof.get("emergency_notes"),
+                vet_name=prof.get("vet_name"),
                 show_phone=bool(prof.get("show_phone", True)),
                 show_email=bool(prof.get("show_email", False)),
+                travel_notes=prof.get("travel_notes"),
+                airline_approved=prof.get("airline_approved"),
+                habitat_temp_min=prof.get("habitat_temp_min"),
+                habitat_temp_max=prof.get("habitat_temp_max"),
+                feeding_schedule=prof.get("feeding_schedule"),
+                handling_notes=prof.get("handling_notes"),
+                lighting_notes=prof.get("lighting_notes"),
+                humidity_notes=prof.get("humidity_notes"),
+                critical_conditions=prof.get("critical_conditions"),
+                critical_medication=prof.get("critical_medication"),
+                blood_type=prof.get("blood_type"),
                 tag=TagInfo(**tag) if tag else None,
                 last_scan=last_scan,
             )

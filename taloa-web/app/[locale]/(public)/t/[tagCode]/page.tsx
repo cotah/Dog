@@ -7,6 +7,9 @@ import { FoundReportSection } from "@/components/public/FoundReportSection";
 import { LostPetBanner } from "@/components/public/LostPetBanner";
 import { PetProfileCard } from "@/components/public/PetProfileCard";
 import { ServiceLeadsSection } from "@/components/public/ServiceLeadsSection";
+import { TravelIdCard } from "@/components/public/TravelIdCard";
+import { HabitatIdCard } from "@/components/public/HabitatIdCard";
+import { EmergencyCardView } from "@/components/public/EmergencyCardView";
 import { TaloaChat } from "@/components/ai/TaloaChat";
 import { Link } from "@/i18n/navigation";
 import { getPublicTag, logScan } from "@/lib/api/public";
@@ -144,6 +147,38 @@ export default async function TagPage({
     );
   }
 
+  const tagType = tag.tag_type ?? "collar_tag";
+
+  const chat = (
+    <TaloaChat
+      context={tag.status === "lost" ? "lost_pet" : "general"}
+      tagCode={tag.tag_code}
+      petContext={{
+        name: tag.pet.name,
+        species: tag.pet.species,
+        breed_or_morph: tag.pet.breed_or_morph,
+        colour: tag.pet.colour,
+        sex: tag.pet.sex,
+        status: tag.status,
+      }}
+    />
+  );
+
+  // ── EMERGENCY CARD ── layout ultra-simples e focado.
+  if (tagType === "emergency_card") {
+    return (
+      <Shell>
+        <EmergencyCardView
+          pet={tag.pet}
+          profile={tag.profile}
+          contact={tag.contact}
+        />
+        {chat}
+      </Shell>
+    );
+  }
+
+  // ── COLLAR / CAT / TRAVEL / HABITAT ── perfil padrao + secao por tipo.
   return (
     <Shell>
       {tag.status === "lost" && (
@@ -151,6 +186,11 @@ export default async function TagPage({
       )}
 
       <PetProfileCard pet={tag.pet} profile={tag.profile} />
+
+      {tagType === "habitat_id" && (
+        <HabitatIdCard pet={tag.pet} profile={tag.profile} />
+      )}
+      {tagType === "travel_id" && <TravelIdCard profile={tag.profile} />}
 
       <ContactOwnerButtons contact={tag.contact} />
 
@@ -161,18 +201,7 @@ export default async function TagPage({
         <ServiceLeadsSection petName={tag.pet.name} tagCode={tag.tag_code} />
       )}
 
-      <TaloaChat
-        context={tag.status === "lost" ? "lost_pet" : "general"}
-        tagCode={tag.tag_code}
-        petContext={{
-          name: tag.pet.name,
-          species: tag.pet.species,
-          breed_or_morph: tag.pet.breed_or_morph,
-          colour: tag.pet.colour,
-          sex: tag.pet.sex,
-          status: tag.status,
-        }}
-      />
+      {chat}
     </Shell>
   );
 }

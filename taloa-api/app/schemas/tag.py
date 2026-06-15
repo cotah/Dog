@@ -23,6 +23,21 @@ class PublicProfile(BaseModel):
     emergency_notes: str | None = None
     vet_name: str | None = None
     vet_phone: str | None = None
+    # ── Campos por tag_type (Etapa 19) ──
+    # travel_id
+    travel_notes: str | None = None
+    airline_approved: bool | None = None
+    # habitat_id (exoticos)
+    habitat_temp_min: float | None = None
+    habitat_temp_max: float | None = None
+    feeding_schedule: str | None = None
+    handling_notes: str | None = None
+    lighting_notes: str | None = None
+    humidity_notes: str | None = None
+    # emergency_card
+    critical_conditions: str | None = None
+    critical_medication: str | None = None
+    blood_type: str | None = None
 
 
 class PublicContact(BaseModel):

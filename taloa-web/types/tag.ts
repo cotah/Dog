@@ -20,7 +20,26 @@ export interface PublicProfile {
   emergency_notes: string | null;
   vet_name: string | null;
   vet_phone: string | null;
+  // Campos por tag_type (Etapa 19)
+  travel_notes: string | null;
+  airline_approved: boolean | null;
+  habitat_temp_min: number | null;
+  habitat_temp_max: number | null;
+  feeding_schedule: string | null;
+  handling_notes: string | null;
+  lighting_notes: string | null;
+  humidity_notes: string | null;
+  critical_conditions: string | null;
+  critical_medication: string | null;
+  blood_type: string | null;
 }
+
+export type TagType =
+  | "collar_tag"
+  | "cat_collar_tag"
+  | "travel_id"
+  | "habitat_id"
+  | "emergency_card";
 
 export interface PublicContact {
   show_phone: boolean;

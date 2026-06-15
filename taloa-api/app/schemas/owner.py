@@ -10,6 +10,7 @@ class OwnerInfo(BaseModel):
 class TagInfo(BaseModel):
     tag_code: str
     status: str
+    tag_type: str | None = None
 
 
 class LastScan(BaseModel):
@@ -35,8 +36,21 @@ class PetSummary(BaseModel):
     behaviour: str | None = None
     public_notes: str | None = None
     emergency_notes: str | None = None
+    vet_name: str | None = None
     show_phone: bool = True
     show_email: bool = False
+    # campos por tag_type (Etapa 19)
+    travel_notes: str | None = None
+    airline_approved: bool | None = None
+    habitat_temp_min: float | None = None
+    habitat_temp_max: float | None = None
+    feeding_schedule: str | None = None
+    handling_notes: str | None = None
+    lighting_notes: str | None = None
+    humidity_notes: str | None = None
+    critical_conditions: str | None = None
+    critical_medication: str | None = None
+    blood_type: str | None = None
     tag: TagInfo | None = None
     last_scan: LastScan | None = None
 
@@ -72,8 +86,21 @@ class PetUpdate(BaseModel):
     behaviour: str | None = None
     public_notes: str | None = None
     emergency_notes: str | None = None
+    vet_name: str | None = None
     show_phone: bool | None = None
     show_email: bool | None = None
+    # campos por tag_type (Etapa 19)
+    travel_notes: str | None = None
+    airline_approved: bool | None = None
+    habitat_temp_min: float | None = None
+    habitat_temp_max: float | None = None
+    feeding_schedule: str | None = None
+    handling_notes: str | None = None
+    lighting_notes: str | None = None
+    humidity_notes: str | None = None
+    critical_conditions: str | None = None
+    critical_medication: str | None = None
+    blood_type: str | None = None
 
 
 class ActionResponse(BaseModel):

@@ -218,6 +218,37 @@
     "fish": "Peixe",
     "other": "Outro"
   },
+  "habitat": {
+    "title": "Habitat ID",
+    "species": "Espécie",
+    "temperature": "Temperatura",
+    "tempRange": "{min}°C – {max}°C",
+    "tempMin": "Mín {value}°C",
+    "tempMax": "Máx {value}°C",
+    "feeding": "Rotina de alimentação",
+    "handling": "Manuseio",
+    "lighting": "Iluminação",
+    "humidity": "Humidade",
+    "vet": "Vet especializado"
+  },
+  "travel": {
+    "title": "Travel ID",
+    "airlineApproved": "Aprovado para voo",
+    "notApproved": "Não aprovado para voo",
+    "instructions": "Instruções de viagem",
+    "medical": "Informações médicas",
+    "allergies": "Alergias",
+    "medication": "Medicação",
+    "vet": "Veterinário"
+  },
+  "emergencyCard": {
+    "title": "EMERGÊNCIA",
+    "subtitle": "Informação crítica — por favor, aja rápido",
+    "conditions": "Condições críticas",
+    "medication": "Medicação de emergência",
+    "bloodType": "Tipo sanguíneo",
+    "allergies": "Alergias"
+  },
   "pricing": {
     "metaTitle": "Planos e Preços TALOA",
     "metaDescription": "Escolha um plano TALOA e mantenha seu pet seguro. Comece grátis; faça upgrade para alertas de scan, diretório de vets, tags premium e mais.",

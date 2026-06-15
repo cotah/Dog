@@ -67,6 +67,18 @@ def get_public_tag(tag_code: str) -> PublicTagResponse:
         emergency_notes=profile.get("emergency_notes"),
         vet_name=profile.get("vet_name"),
         vet_phone=profile.get("vet_phone"),
+        # campos por tag_type (Etapa 19)
+        travel_notes=profile.get("travel_notes"),
+        airline_approved=profile.get("airline_approved"),
+        habitat_temp_min=profile.get("habitat_temp_min"),
+        habitat_temp_max=profile.get("habitat_temp_max"),
+        feeding_schedule=profile.get("feeding_schedule"),
+        handling_notes=profile.get("handling_notes"),
+        lighting_notes=profile.get("lighting_notes"),
+        humidity_notes=profile.get("humidity_notes"),
+        critical_conditions=profile.get("critical_conditions"),
+        critical_medication=profile.get("critical_medication"),
+        blood_type=profile.get("blood_type"),
     )
 
     # Contato do dono — respeita show_phone / show_email
