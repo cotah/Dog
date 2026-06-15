@@ -6,6 +6,7 @@ import { FoundReportSection } from "@/components/public/FoundReportSection";
 import { LostPetBanner } from "@/components/public/LostPetBanner";
 import { PetProfileCard } from "@/components/public/PetProfileCard";
 import { ServiceLeadsSection } from "@/components/public/ServiceLeadsSection";
+import { TaloaChat } from "@/components/ai/TaloaChat";
 import { getPublicTag, logScan } from "@/lib/api/public";
 
 export const dynamic = "force-dynamic";
@@ -134,6 +135,19 @@ export default async function TagPage({
       {tag.status === "active" && (
         <ServiceLeadsSection petName={tag.pet.name} tagCode={tag.tag_code} />
       )}
+
+      <TaloaChat
+        context={tag.status === "lost" ? "lost_pet" : "general"}
+        tagCode={tag.tag_code}
+        petContext={{
+          name: tag.pet.name,
+          species: tag.pet.species,
+          breed_or_morph: tag.pet.breed_or_morph,
+          colour: tag.pet.colour,
+          sex: tag.pet.sex,
+          status: tag.status,
+        }}
+      />
     </Shell>
   );
 }

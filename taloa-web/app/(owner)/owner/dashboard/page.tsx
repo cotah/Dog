@@ -2,6 +2,7 @@ import { formatDistanceToNow } from "date-fns";
 import { Bell, PawPrint } from "lucide-react";
 import Image from "next/image";
 
+import { TaloaChat } from "@/components/ai/TaloaChat";
 import { PetCard } from "@/components/owner/PetCard";
 import { ServiceInterest } from "@/components/owner/ServiceInterest";
 import { apiFetchServer } from "@/lib/api/server";
@@ -111,6 +112,8 @@ export default async function OwnerDashboard() {
 
       {/* Interesse em servicos */}
       <ServiceInterest petId={firstPet?.id} tagCode={firstPet?.tag?.tag_code} />
+
+      <TaloaChat context="general" />
     </main>
   );
 }

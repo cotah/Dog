@@ -17,6 +17,7 @@ from app.core.supabase import get_service_client
 from app.schemas.auth import CurrentUser
 
 _bearer = HTTPBearer(auto_error=True)
+_bearer_optional = HTTPBearer(auto_error=False)
 
 # Cliente JWKS (cacheia as chaves publicas do Supabase)
 _JWKS_URL = f"{settings.SUPABASE_URL}/auth/v1/.well-known/jwks.json"
@@ -80,6 +81,22 @@ def get_current_user(
         )
     row = result.data[0]
     return CurrentUser(id=row["id"], email=row.get("email"), role=row["role"])
+
+
+def get_optional_user(
+    credentials: HTTPAuthorizationCredentials | None = Depends(_bearer_optional),
+) -> CurrentUser | None:
+    """Auth opcional: retorna o usuario se houver JWT valido, senao None.
+
+    Usado em rotas publicas que tambem funcionam logado (ex: TaloaChat nas
+    paginas publicas e no dashboard do dono).
+    """
+    if credentials is None:
+        return None
+    try:
+        return get_current_user(credentials)
+    except HTTPException:
+        return None
 
 
 def require_admin(user: CurrentUser = Depends(get_current_user)) -> CurrentUser:

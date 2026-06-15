@@ -1,6 +1,7 @@
-import { AlertTriangle, PawPrint } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import Link from "next/link";
 
+import { TaloaChat } from "@/components/ai/TaloaChat";
 import { EmergencyDirectory } from "@/components/public/EmergencyDirectory";
 import { getVetClinics } from "@/lib/api/public";
 import type { PublicVet } from "@/types/vet";
@@ -39,14 +40,7 @@ export default async function EmergencyPage() {
 
       <EmergencyDirectory clinics={clinics} />
 
-      {/* Placeholder do agente de IA (chat real entra na Etapa 13) */}
-      <button
-        disabled
-        className="flex items-center justify-center gap-2 rounded-card border border-dashed border-taloa-primary/40 bg-taloa-primary/5 p-3 text-sm font-medium text-taloa-primary/70"
-      >
-        <PawPrint className="h-4 w-4" />
-        Ask TALOA which vet fits your pet (coming soon)
-      </button>
+      <TaloaChat context="emergency" />
     </main>
   );
 }
