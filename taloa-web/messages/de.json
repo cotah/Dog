@@ -236,7 +236,9 @@
     "features": {
       "free": ["Basic pet profile", "Lost Mode", "Secure owner contact", "QR + NFC tag"],
       "plus": ["Everything in Free", "Scan alerts", "Scan history", "Vet directory", "Basic AI assistant", "Partner discounts"],
-      "club": ["Everything in Plus", "Premium tag included", "Welcome Kit", "Emergency Card", "Travel ID", "Full AI assistant", "Paw Points", "Quarterly Care Drop"]
+      "club": ["Everything in Plus", "Premium tag included", "Welcome Kit", "Emergency Card", "Travel ID", "Full AI assistant", "Paw Points", "Quarterly Care Drop"],
+      "exotic_club": ["Everything in Club", "Habitat ID", "Specialist vet directory", "Species-specific content"],
+      "family": ["Everything in Club", "Up to 5 pets", "Premium tags for all your pets"]
     }
   }
 }
