@@ -1,13 +1,15 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Spinner } from "@/components/ui/Spinner";
 
 export default function LoginPage() {
+  const t = useTranslations("login");
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,7 +25,7 @@ export default function LoginPage() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      setError("Email ou senha invalidos.");
+      setError(t("invalidCredentials"));
       setLoading(false);
       return;
     }
@@ -38,13 +40,13 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center p-6">
       <div className="w-full max-w-sm rounded-card bg-white p-8 shadow-sm">
-        <h1 className="mb-1 text-2xl font-bold text-taloa-primary">Welcome back</h1>
-        <p className="mb-6 text-sm text-slate-500">Log in to your TALOA account.</p>
+        <h1 className="mb-1 text-2xl font-bold text-taloa-primary">{t("title")}</h1>
+        <p className="mb-6 text-sm text-slate-500">{t("subtitle")}</p>
 
         <form onSubmit={onSubmit} className="flex flex-col gap-4">
           <div>
             <label className="mb-1 block text-sm font-medium" htmlFor="email">
-              Email
+              {t("email")}
             </label>
             <input
               id="email"
@@ -58,7 +60,7 @@ export default function LoginPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium" htmlFor="password">
-              Password
+              {t("password")}
             </label>
             <input
               id="password"
@@ -79,18 +81,18 @@ export default function LoginPage() {
           >
             {loading ? (
               <>
-                <Spinner /> Logging in…
+                <Spinner /> {t("loggingIn")}
               </>
             ) : (
-              "Log in"
+              t("submit")
             )}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-slate-500">
-          No account?{" "}
+          {t("noAccount")}{" "}
           <Link href="/signup" className="font-medium text-taloa-primary">
-            Sign up
+            {t("signupLink")}
           </Link>
         </p>
       </div>

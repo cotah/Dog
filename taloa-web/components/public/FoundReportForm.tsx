@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, ImagePlus, MapPin } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 
 import { uploadPetPhoto } from "@/lib/api/activate";
@@ -17,6 +18,8 @@ export function FoundReportForm({
   tagCode: string;
   onSuccess: () => void;
 }) {
+  const t = useTranslations("found");
+  const tc = useTranslations("common");
   const [area, setArea] = useState("");
   const [notes, setNotes] = useState("");
   const [phone, setPhone] = useState("");
@@ -41,7 +44,7 @@ export function FoundReportForm({
   function onShareLocation() {
     setLocError(null);
     if (!("geolocation" in navigator)) {
-      setLocError("Location isn't available on this device.");
+      setLocError(t("locationUnavailable"));
       return;
     }
     setLocLoading(true);
@@ -51,7 +54,7 @@ export function FoundReportForm({
         setLocLoading(false);
       },
       () => {
-        setLocError("Couldn't get your location. You can still send the report.");
+        setLocError(t("locationError"));
         setLocLoading(false);
       },
       { enableHighAccuracy: true, timeout: 10000 },
@@ -79,7 +82,7 @@ export function FoundReportForm({
       });
       onSuccess();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : tc("somethingWentWrong"));
       setLoading(false);
     }
   }
@@ -89,7 +92,7 @@ export function FoundReportForm({
       onSubmit={onSubmit}
       className="flex flex-col gap-3 rounded-card bg-white p-5 shadow-sm"
     >
-      <h3 className="font-semibold text-slate-800">I found this pet</h3>
+      <h3 className="font-semibold text-slate-800">{t("formTitle")}</h3>
 
       {/* Foto opcional */}
       <button
@@ -103,7 +106,7 @@ export function FoundReportForm({
         ) : (
           <span className="flex flex-col items-center gap-1 text-sm">
             <ImagePlus className="h-5 w-5" />
-            Add a photo (optional)
+            {t("addPhoto")}
           </span>
         )}
       </button>
@@ -117,32 +120,30 @@ export function FoundReportForm({
 
       <input
         className={inputClass}
-        placeholder="Where did you find this pet? (area)"
+        placeholder={t("areaPlaceholder")}
         value={area}
         onChange={(e) => setArea(e.target.value)}
       />
       <textarea
         className={`${inputClass} min-h-20 resize-none`}
-        placeholder="Notes (anything that helps the owner)"
+        placeholder={t("notesPlaceholder")}
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
       />
       <input
         className={inputClass}
         type="tel"
-        placeholder="Your phone (optional)"
+        placeholder={t("phonePlaceholder")}
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
       />
 
       {/* Share location — permissao explicita com texto claro ANTES de capturar */}
       <div className="rounded-input border border-slate-200 p-3">
-        <p className="text-sm text-slate-600">
-          Share your current location to help the owner find their pet faster.
-        </p>
+        <p className="text-sm text-slate-600">{t("shareLocationHelp")}</p>
         {coords ? (
           <p className="mt-2 flex items-center gap-1 text-sm font-medium text-taloa-primary">
-            <Check className="h-4 w-4" /> Location shared
+            <Check className="h-4 w-4" /> {t("locationShared")}
           </p>
         ) : (
           <button
@@ -152,7 +153,7 @@ export function FoundReportForm({
             className="mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-input border border-taloa-primary font-medium text-taloa-primary hover:bg-taloa-primary/5 disabled:opacity-60"
           >
             {locLoading ? <Spinner className="h-4 w-4" /> : <MapPin className="h-4 w-4" />}
-            {locLoading ? "Getting location…" : "Share My Location"}
+            {locLoading ? t("gettingLocation") : t("shareMyLocation")}
           </button>
         )}
         {locError && <p className="mt-2 text-sm text-taloa-alert">{locError}</p>}
@@ -167,10 +168,10 @@ export function FoundReportForm({
       >
         {loading ? (
           <>
-            <Spinner /> Sending…
+            <Spinner /> {t("sending")}
           </>
         ) : (
-          "Notify the owner"
+          t("notifyOwner")
         )}
       </button>
     </form>

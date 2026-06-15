@@ -1,5 +1,9 @@
 import path from "node:path";
 import withPWAInit from "@ducanh2912/next-pwa";
+import createNextIntlPlugin from "next-intl/plugin";
+
+// next-intl: aponta para a config de request (carrega messages por locale).
+const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -29,4 +33,5 @@ const withPWA = withPWAInit({
   },
 });
 
-export default withPWA(nextConfig);
+// Compoe os dois wrappers: PWA por dentro, next-intl por fora.
+export default withNextIntl(withPWA(nextConfig));

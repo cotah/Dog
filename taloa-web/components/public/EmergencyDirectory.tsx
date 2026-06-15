@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import type { PublicVet } from "@/types/vet";
@@ -8,16 +9,27 @@ import { EmergencyVetCard } from "./EmergencyVetCard";
 
 const EXOTIC = ["reptile", "bird", "rabbit", "small_mammal"];
 
-const FILTERS: { key: string; label: string; match: (s: string[]) => boolean }[] = [
-  { key: "all", label: "All Species", match: () => true },
-  { key: "dogs_cats", label: "Dogs & Cats", match: (s) => s.includes("dog") || s.includes("cat") },
-  { key: "reptiles", label: "Reptiles", match: (s) => s.includes("reptile") },
-  { key: "birds", label: "Birds", match: (s) => s.includes("bird") },
-  { key: "small", label: "Rabbits & Small Pets", match: (s) => s.includes("rabbit") || s.includes("small_mammal") },
-  { key: "exotics", label: "Exotics", match: (s) => EXOTIC.some((x) => s.includes(x)) },
+const FILTERS: { key: string; match: (s: string[]) => boolean }[] = [
+  { key: "all", match: () => true },
+  { key: "dogs_cats", match: (s) => s.includes("dog") || s.includes("cat") },
+  { key: "reptiles", match: (s) => s.includes("reptile") },
+  { key: "birds", match: (s) => s.includes("bird") },
+  { key: "small", match: (s) => s.includes("rabbit") || s.includes("small_mammal") },
+  { key: "exotics", match: (s) => EXOTIC.some((x) => s.includes(x)) },
 ];
 
+// Mapeia a chave do filtro para a chave de traducao.
+const FILTER_LABEL: Record<string, string> = {
+  all: "filterAll",
+  dogs_cats: "filterDogsCats",
+  reptiles: "filterReptiles",
+  birds: "filterBirds",
+  small: "filterSmall",
+  exotics: "filterExotics",
+};
+
 export function EmergencyDirectory({ clinics }: { clinics: PublicVet[] }) {
+  const t = useTranslations("emergency");
   const [filter, setFilter] = useState("all");
   const [only24h, setOnly24h] = useState(false);
 
@@ -42,7 +54,7 @@ export function EmergencyDirectory({ clinics }: { clinics: PublicVet[] }) {
                   : "border border-slate-300 bg-white text-slate-600 hover:bg-slate-50"
               }`}
             >
-              {f.label}
+              {t(FILTER_LABEL[f.key])}
             </button>
           ))}
         </div>
@@ -52,17 +64,17 @@ export function EmergencyDirectory({ clinics }: { clinics: PublicVet[] }) {
             checked={only24h}
             onChange={(e) => setOnly24h(e.target.checked)}
           />
-          24h Only
+          {t("only24h")}
         </label>
       </div>
 
       <p className="text-xs text-slate-400">
-        {visible.length} clinic{visible.length === 1 ? "" : "s"}
+        {t("clinicCount", { count: visible.length })}
       </p>
 
       {visible.length === 0 ? (
         <div className="rounded-card bg-white p-8 text-center text-slate-500 shadow-sm">
-          No clinics match this filter.
+          {t("noMatch")}
         </div>
       ) : (
         visible.map((vet) => <EmergencyVetCard key={vet.id} vet={vet} />)

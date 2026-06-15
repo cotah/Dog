@@ -1,17 +1,22 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
+import { Link } from "@/i18n/navigation";
 import { getPublicTag } from "@/lib/api/public";
 
 import { ActivateForm } from "./activate-form";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Activate your TALOA tag",
-  description:
-    "Set up your pet's TALOA safety profile in two quick steps so anyone who finds them can reach you.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "activate" });
+  return { title: t("metaTitle"), description: t("metaDescription") };
+}
 
 function Centered({ children }: { children: React.ReactNode }) {
   return (
@@ -26,18 +31,17 @@ function Centered({ children }: { children: React.ReactNode }) {
 export default async function ActivatePage({
   params,
 }: {
-  params: Promise<{ tagCode: string }>;
+  params: Promise<{ locale: string; tagCode: string }>;
 }) {
   const { tagCode } = await params;
+  const t = await getTranslations("activate");
   const tag = await getPublicTag(tagCode);
 
   if (!tag) {
     return (
       <Centered>
-        <h1 className="text-xl font-bold text-slate-800">Tag not found</h1>
-        <p className="mt-2 text-slate-500">
-          We couldn&apos;t find a TALOA tag with this code.
-        </p>
+        <h1 className="text-xl font-bold text-slate-800">{t("notFoundTitle")}</h1>
+        <p className="mt-2 text-slate-500">{t("notFoundBody")}</p>
       </Centered>
     );
   }
@@ -47,16 +51,14 @@ export default async function ActivatePage({
     return (
       <Centered>
         <h1 className="text-xl font-bold text-slate-800">
-          This tag is already set up
+          {t("alreadySetupTitle")}
         </h1>
-        <p className="mt-2 text-slate-500">
-          This tag is not available for activation.
-        </p>
+        <p className="mt-2 text-slate-500">{t("alreadySetupBody")}</p>
         <Link
           href={`/t/${tag.tag_code}`}
           className="mt-4 inline-block font-medium text-taloa-primary"
         >
-          View the pet profile
+          {t("viewProfile")}
         </Link>
       </Centered>
     );

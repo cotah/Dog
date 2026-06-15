@@ -8,6 +8,7 @@ import {
   Turtle,
   type LucideIcon,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 import type { PublicPet, PublicProfile } from "@/types/tag";
@@ -46,6 +47,7 @@ export function PetProfileCard({
   pet: PublicPet;
   profile: PublicProfile | null;
 }) {
+  const t = useTranslations("profile");
   const subtitle = [
     pet.breed_or_morph,
     pet.age_years ? `${pet.age_years}y` : null,
@@ -79,10 +81,10 @@ export function PetProfileCard({
         {subtitle && <p className="mt-1 text-sm capitalize text-slate-500">{subtitle}</p>}
 
         <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
-          <Detail label="Allergies" value={profile?.allergies ?? null} />
-          <Detail label="Medication" value={profile?.medication ?? null} />
-          <Detail label="Behaviour" value={profile?.behaviour ?? null} />
-          <Detail label="Vet" value={profile?.vet_name ?? null} />
+          <Detail label={t("allergies")} value={profile?.allergies ?? null} />
+          <Detail label={t("medication")} value={profile?.medication ?? null} />
+          <Detail label={t("behaviour")} value={profile?.behaviour ?? null} />
+          <Detail label={t("vet")} value={profile?.vet_name ?? null} />
         </div>
 
         {profile?.public_notes && (
@@ -92,7 +94,7 @@ export function PetProfileCard({
         {profile?.emergency_notes && (
           <div className="mt-4 rounded-input border-l-4 border-taloa-warning bg-taloa-warning/10 p-3">
             <p className="text-xs font-semibold uppercase tracking-wide text-taloa-warning">
-              Emergency notes
+              {t("emergencyNotes")}
             </p>
             <p className="text-slate-700">{profile.emergency_notes}</p>
           </div>

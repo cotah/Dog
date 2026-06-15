@@ -1,17 +1,16 @@
 import { Clock, MapPin, Phone } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import type { PublicVet } from "@/types/vet";
 
-const SPECIES_LABEL: Record<string, string> = {
-  dog: "Dogs",
-  cat: "Cats",
-  reptile: "Reptiles",
-  bird: "Birds",
-  rabbit: "Rabbits",
-  small_mammal: "Small pets",
-};
+// Mapeia a especie para a chave de traducao (ex: small_mammal -> speciesSmall_mammal).
+function speciesKey(s: string): string {
+  return `species${s.charAt(0).toUpperCase()}${s.slice(1)}`;
+}
 
 export function EmergencyVetCard({ vet }: { vet: PublicVet }) {
+  const t = useTranslations("emergency");
+
   return (
     <div className="rounded-card bg-white p-4 shadow-sm">
       <div className="flex items-start justify-between gap-2">
@@ -38,14 +37,17 @@ export function EmergencyVetCard({ vet }: { vet: PublicVet }) {
 
       {vet.species_supported && vet.species_supported.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1">
-          {vet.species_supported.map((s) => (
-            <span
-              key={s}
-              className="rounded-badge bg-taloa-primary/10 px-2 py-0.5 text-xs text-taloa-primary"
-            >
-              {SPECIES_LABEL[s] ?? s}
-            </span>
-          ))}
+          {vet.species_supported.map((s) => {
+            const key = speciesKey(s);
+            return (
+              <span
+                key={s}
+                className="rounded-badge bg-taloa-primary/10 px-2 py-0.5 text-xs text-taloa-primary"
+              >
+                {t.has(key) ? t(key) : s}
+              </span>
+            );
+          })}
         </div>
       )}
 
@@ -54,7 +56,7 @@ export function EmergencyVetCard({ vet }: { vet: PublicVet }) {
         className="mt-3 flex h-12 items-center justify-center gap-2 rounded-input bg-taloa-primary text-base font-semibold text-white hover:bg-taloa-secondary"
       >
         <Phone className="h-5 w-5" />
-        Call Now · {vet.phone}
+        {t("callNow", { phone: vet.phone })}
       </a>
     </div>
   );

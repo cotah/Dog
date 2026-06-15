@@ -1,6 +1,13 @@
+import { hasLocale, NextIntlClientProvider } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import { notFound } from "next/navigation";
+
+import { LocaleSwitcher } from "@/components/LocaleSwitcher";
+import { routing } from "@/i18n/routing";
+
+import "../globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -31,14 +38,34 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+// Pre-gera as rotas estaticas dos 6 idiomas.
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export default async function LocaleLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }) {
+  const { locale } = await params;
+  // Locale invalido nao deveria chegar aqui (o middleware filtra), mas garante.
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
+  // Habilita render estatico com o locale correto.
+  setRequestLocale(locale);
+
   return (
-    <html lang="en" className={inter.variable}>
-      <body>{children}</body>
+    <html lang={locale} className={inter.variable}>
+      <body>
+        <NextIntlClientProvider>
+          <LocaleSwitcher />
+          {children}
+        </NextIntlClientProvider>
+      </body>
     </html>
   );
 }

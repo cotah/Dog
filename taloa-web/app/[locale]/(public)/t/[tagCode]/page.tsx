@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
-import Link from "next/link";
 
 import { ContactOwnerButtons } from "@/components/public/ContactOwnerButtons";
 import { FoundReportSection } from "@/components/public/FoundReportSection";
@@ -8,6 +8,7 @@ import { LostPetBanner } from "@/components/public/LostPetBanner";
 import { PetProfileCard } from "@/components/public/PetProfileCard";
 import { ServiceLeadsSection } from "@/components/public/ServiceLeadsSection";
 import { TaloaChat } from "@/components/ai/TaloaChat";
+import { Link } from "@/i18n/navigation";
 import { getPublicTag, logScan } from "@/lib/api/public";
 
 export const dynamic = "force-dynamic";
@@ -15,38 +16,38 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ tagCode: string }>;
+  params: Promise<{ locale: string; tagCode: string }>;
 }): Promise<Metadata> {
-  const { tagCode } = await params;
+  const { locale, tagCode } = await params;
+  const t = await getTranslations({ locale, namespace: "tag" });
   try {
     const tag = await getPublicTag(tagCode);
     const name = tag?.pet?.name;
     if (name) {
       const lost = tag.status === "lost";
       return {
-        title: lost
-          ? `${name} is lost — TALOA`
-          : `${name} — TALOA pet profile`,
+        title: lost ? t("lostTitle", { name }) : t("profileTitle", { name }),
         description: lost
-          ? `${name} is missing. If you found this pet, you can contact the owner right away through TALOA.`
-          : `${name}'s TALOA safety profile. Found this pet? Reach the owner here.`,
+          ? t("lostDescription", { name })
+          : t("profileDescription", { name }),
       };
     }
   } catch {
     // cai no fallback
   }
   return {
-    title: "Pet profile — TALOA",
-    description: "A TALOA pet safety profile.",
+    title: t("fallbackTitle"),
+    description: t("fallbackDescription"),
   };
 }
 
-function Shell({ children }: { children: React.ReactNode }) {
+async function Shell({ children }: { children: React.ReactNode }) {
+  const tc = await getTranslations("common");
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col gap-4 p-4">
       {children}
       <footer className="mt-auto py-4 text-center text-xs text-slate-400">
-        Powered by TALOA — taloa.ie
+        {tc("poweredBy")}
       </footer>
     </main>
   );
@@ -55,9 +56,11 @@ function Shell({ children }: { children: React.ReactNode }) {
 export default async function TagPage({
   params,
 }: {
-  params: Promise<{ tagCode: string }>;
+  params: Promise<{ locale: string; tagCode: string }>;
 }) {
   const { tagCode } = await params;
+  const t = await getTranslations("tag");
+  const tc = await getTranslations("common");
   const tag = await getPublicTag(tagCode);
 
   // Tag inexistente
@@ -65,15 +68,13 @@ export default async function TagPage({
     return (
       <Shell>
         <div className="mt-10 rounded-card bg-white p-8 text-center shadow-sm">
-          <h1 className="text-xl font-bold text-slate-800">Tag not found</h1>
-          <p className="mt-2 text-slate-500">
-            We couldn&apos;t find a TALOA tag with this code.
-          </p>
+          <h1 className="text-xl font-bold text-slate-800">{t("notFoundTitle")}</h1>
+          <p className="mt-2 text-slate-500">{t("notFoundBody")}</p>
           <Link
             href="/"
             className="mt-4 inline-block font-medium text-taloa-primary"
           >
-            Go to taloa.ie
+            {tc("goToTaloa")}
           </Link>
         </div>
       </Shell>
@@ -101,15 +102,12 @@ export default async function TagPage({
       <Shell>
         <div className="mt-10 rounded-card bg-white p-8 text-center shadow-sm">
           <h1 className="text-2xl font-bold text-taloa-primary">TALOA</h1>
-          <p className="mt-2 text-slate-600">
-            This tag isn&apos;t activated yet. Activate it to create your
-            pet&apos;s digital safety ID.
-          </p>
+          <p className="mt-2 text-slate-600">{t("inactiveBody")}</p>
           <Link
             href={`/activate/${tag.tag_code}`}
             className="mt-6 inline-flex h-12 items-center justify-center rounded-input bg-taloa-primary px-6 font-semibold text-white hover:bg-taloa-secondary"
           >
-            Activate this tag
+            {t("activateCta")}
           </Link>
           <p className="mt-4 text-xs text-slate-400">{tag.tag_code}</p>
         </div>
@@ -122,11 +120,8 @@ export default async function TagPage({
     return (
       <Shell>
         <div className="mt-10 rounded-card bg-white p-8 text-center shadow-sm">
-          <h1 className="text-xl font-bold text-slate-800">Tag disabled</h1>
-          <p className="mt-2 text-slate-500">
-            This TALOA tag has been disabled. If you found a pet, please contact
-            us.
-          </p>
+          <h1 className="text-xl font-bold text-slate-800">{t("disabledTitle")}</h1>
+          <p className="mt-2 text-slate-500">{t("disabledBody")}</p>
           <a
             href="mailto:hello@taloa.ie"
             className="mt-4 inline-block font-medium text-taloa-primary"
@@ -143,7 +138,7 @@ export default async function TagPage({
     return (
       <Shell>
         <div className="mt-10 rounded-card bg-white p-8 text-center shadow-sm">
-          <p className="text-slate-500">This pet&apos;s profile is unavailable.</p>
+          <p className="text-slate-500">{t("profileUnavailable")}</p>
         </div>
       </Shell>
     );

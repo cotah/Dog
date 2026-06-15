@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertTriangle, Send, Sparkles, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 import {
@@ -8,9 +9,6 @@ import {
   type ChatMessage,
   streamChat,
 } from "@/lib/api/ai";
-
-const DISCLAIMER =
-  "TALOA AI is not a vet. For emergencies, call a vet immediately.";
 
 export function TaloaChat({
   context = "general",
@@ -21,6 +19,7 @@ export function TaloaChat({
   petContext?: Record<string, unknown> | null;
   tagCode?: string | null;
 }) {
+  const t = useTranslations("ai");
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
@@ -83,10 +82,10 @@ export function TaloaChat({
           type="button"
           onClick={() => setOpen(true)}
           className="fixed bottom-5 right-5 z-40 flex h-14 items-center gap-2 rounded-full bg-taloa-primary px-5 font-semibold text-white shadow-lg hover:bg-taloa-secondary"
-          aria-label="Ask TALOA"
+          aria-label={t("askTaloa")}
         >
           <Sparkles className="h-5 w-5" />
-          Ask TALOA
+          {t("askTaloa")}
         </button>
       )}
 
@@ -104,11 +103,11 @@ export function TaloaChat({
             <div className="flex items-center justify-between border-b border-slate-100 bg-taloa-primary px-4 py-3 text-white">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5" />
-                <span className="font-semibold">Ask TALOA</span>
+                <span className="font-semibold">{t("askTaloa")}</span>
               </div>
               <button
                 onClick={() => setOpen(false)}
-                aria-label="Close chat"
+                aria-label={t("closeChat")}
                 className="text-white/80 hover:text-white"
               >
                 <X className="h-5 w-5" />
@@ -118,15 +117,15 @@ export function TaloaChat({
             {/* Disclaimer fixo */}
             <div className="flex items-start gap-2 bg-taloa-warning/10 px-4 py-2 text-xs text-slate-600">
               <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-taloa-warning" />
-              <p>{DISCLAIMER}</p>
+              <p>{t("disclaimer")}</p>
             </div>
 
             {/* Mensagens */}
             <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto p-4">
               {messages.length === 0 && (
                 <div className="mt-6 text-center text-sm text-slate-400">
-                  <p>Hi! I&apos;m TALOA AI.</p>
-                  <p>Ask me about pet safety, lost &amp; found, or finding a vet in Dublin.</p>
+                  <p>{t("greeting1")}</p>
+                  <p>{t("greeting2")}</p>
                 </div>
               )}
 
@@ -161,14 +160,14 @@ export function TaloaChat({
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Type your question…"
+                placeholder={t("inputPlaceholder")}
                 disabled={streaming}
                 className="h-12 flex-1 rounded-input border border-slate-300 px-3 outline-none focus:border-taloa-primary disabled:bg-slate-50"
               />
               <button
                 type="submit"
                 disabled={streaming || !input.trim()}
-                aria-label="Send"
+                aria-label={t("send")}
                 className="flex h-12 w-12 shrink-0 items-center justify-center rounded-input bg-taloa-primary text-white hover:bg-taloa-secondary disabled:opacity-50"
               >
                 <Send className="h-5 w-5" />

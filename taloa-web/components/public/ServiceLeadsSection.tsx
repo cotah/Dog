@@ -7,6 +7,7 @@ import {
   Home,
   Scissors,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { SERVICE_OPTIONS } from "@/lib/api/leads";
@@ -29,6 +30,7 @@ export function ServiceLeadsSection({
   petName: string;
   tagCode: string;
 }) {
+  const t = useTranslations("services");
   const [active, setActive] = useState<(typeof SERVICE_OPTIONS)[number] | null>(
     null,
   );
@@ -38,9 +40,7 @@ export function ServiceLeadsSection({
     return (
       <div className="rounded-card border border-slate-200 bg-white p-5 text-center">
         <CheckCircle2 className="mx-auto h-8 w-8 text-taloa-primary" />
-        <p className="mt-2 font-medium text-slate-700">
-          Thanks! We&apos;ll be in touch soon.
-        </p>
+        <p className="mt-2 font-medium text-slate-700">{t("thanks")}</p>
       </div>
     );
   }
@@ -48,7 +48,7 @@ export function ServiceLeadsSection({
   return (
     <section className="rounded-card border border-slate-200 bg-white p-4">
       <h3 className="text-sm font-semibold text-slate-700">
-        Need help with {petName} in Dublin?
+        {t("needHelp", { petName })}
       </h3>
       <div className="mt-3 grid grid-cols-2 gap-2">
         {SERVICE_OPTIONS.map((svc) => {
@@ -61,7 +61,7 @@ export function ServiceLeadsSection({
               className="flex h-12 items-center justify-center gap-2 rounded-input border border-slate-200 text-sm font-medium text-slate-600 hover:border-taloa-primary hover:bg-slate-50"
             >
               <Icon className="h-4 w-4 text-slate-400" />
-              {svc.label}
+              {t(svc.type)}
             </button>
           );
         })}
@@ -70,7 +70,7 @@ export function ServiceLeadsSection({
       {active && (
         <ServiceLeadModal
           serviceType={active.type}
-          serviceLabel={active.label}
+          serviceLabel={t(active.type)}
           petName={petName}
           tagCode={tagCode}
           onClose={() => setActive(null)}

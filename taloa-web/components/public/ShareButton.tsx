@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, Share2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 // Botao de compartilhar: usa a Web Share API nativa quando disponivel
@@ -12,12 +13,13 @@ export function ShareButton({
   petName: string;
   shareUrl: string;
 }) {
+  const t = useTranslations("share");
   const [copied, setCopied] = useState(false);
 
   async function onShare() {
     const data = {
-      title: `Help find ${petName}`,
-      text: `${petName} is missing. Please help share and bring ${petName} home.`,
+      title: t("shareTitle", { petName }),
+      text: t("shareText", { petName }),
       url: shareUrl,
     };
 
@@ -36,7 +38,7 @@ export function ShareButton({
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // sem clipboard: ultimo recurso, abre o prompt do navegador
-      window.prompt("Copy this link to share:", shareUrl);
+      window.prompt(t("copyPrompt"), shareUrl);
     }
   }
 
@@ -48,11 +50,11 @@ export function ShareButton({
     >
       {copied ? (
         <>
-          <Check className="h-5 w-5" /> Link copied
+          <Check className="h-5 w-5" /> {t("linkCopied")}
         </>
       ) : (
         <>
-          <Share2 className="h-5 w-5" /> Share this poster
+          <Share2 className="h-5 w-5" /> {t("sharePoster")}
         </>
       )}
     </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { ImagePlus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 
 import { activateTag, uploadPetPhoto } from "@/lib/api/activate";
@@ -12,6 +13,9 @@ const inputClass =
   "w-full rounded-input border border-slate-300 px-3 py-3 outline-none focus:border-taloa-primary";
 
 export function ActivateForm({ tagCode }: { tagCode: string }) {
+  const t = useTranslations("activate");
+  const ts = useTranslations("species");
+  const tc = useTranslations("common");
   const [step, setStep] = useState<1 | 2>(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +45,7 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
     e.preventDefault();
     setError(null);
     if (!name || !email || !phone || password.length < 8) {
-      setError("Please fill all fields. Password needs at least 8 characters.");
+      setError(t("fillAll"));
       return;
     }
     setStep(2);
@@ -57,11 +61,11 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
     e.preventDefault();
     setError(null);
     if (!petName) {
-      setError("Please enter your pet's name.");
+      setError(t("enterPetName"));
       return;
     }
     if (!gdpr) {
-      setError("Please accept the privacy terms (GDPR) to continue.");
+      setError(t("acceptGdpr"));
       return;
     }
     setLoading(true);
@@ -92,7 +96,7 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
       // (evita o flash do estado antigo vindo do client router cache)
       window.location.assign(`/t/${tagCode}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : tc("somethingWentWrong"));
       setLoading(false);
     }
   }
@@ -100,9 +104,9 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col p-4">
       <div className="mb-4 mt-2">
-        <h1 className="text-2xl font-bold text-taloa-primary">Activate your tag</h1>
+        <h1 className="text-2xl font-bold text-taloa-primary">{t("title")}</h1>
         <p className="text-sm text-slate-500">
-          {tagCode} · Step {step} of 2
+          {t("stepIndicator", { tagCode, step })}
         </p>
         <div className="mt-3 flex gap-2">
           <div className="h-1.5 flex-1 rounded-full bg-taloa-primary" />
@@ -117,10 +121,10 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
       <div className="rounded-card bg-white p-6 shadow-sm">
         {step === 1 ? (
           <form onSubmit={goToStep2} className="flex flex-col gap-4">
-            <h2 className="font-semibold text-slate-700">Your details</h2>
+            <h2 className="font-semibold text-slate-700">{t("yourDetails")}</h2>
             <input
               className={inputClass}
-              placeholder="Your name"
+              placeholder={t("namePlaceholder")}
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -129,22 +133,22 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
               <input
                 className={`${inputClass} ${touched.email && !emailValid ? "border-taloa-alert" : ""}`}
                 type="email"
-                placeholder="Email"
+                placeholder={t("emailPlaceholder")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                onBlur={() => setTouched((t) => ({ ...t, email: true }))}
+                onBlur={() => setTouched((prev) => ({ ...prev, email: true }))}
                 required
               />
               {touched.email && !emailValid && (
                 <p className="mt-1 text-xs text-taloa-alert">
-                  Enter a valid email address.
+                  {t("invalidEmail")}
                 </p>
               )}
             </div>
             <input
               className={inputClass}
               type="tel"
-              placeholder="Phone (shown to whoever finds your pet)"
+              placeholder={t("phonePlaceholder")}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               required
@@ -153,10 +157,10 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
               <input
                 className={`${inputClass} ${touched.password && !passwordValid ? "border-taloa-alert" : ""}`}
                 type="password"
-                placeholder="Password (min 8 characters)"
+                placeholder={t("passwordPlaceholder")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                onBlur={() => setTouched((t) => ({ ...t, password: true }))}
+                onBlur={() => setTouched((prev) => ({ ...prev, password: true }))}
                 minLength={8}
                 required
               />
@@ -164,7 +168,9 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
                 <p
                   className={`mt-1 text-xs ${passwordValid ? "text-taloa-secondary" : "text-slate-400"}`}
                 >
-                  {passwordValid ? "✓ Looks good" : `${password.length}/8 characters`}
+                  {passwordValid
+                    ? t("passwordOk")
+                    : t("passwordCount", { count: password.length })}
                 </p>
               )}
             </div>
@@ -176,12 +182,12 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
               disabled={!step1Valid}
               className="h-12 rounded-input bg-taloa-primary font-semibold text-white hover:bg-taloa-secondary disabled:opacity-60"
             >
-              Continue
+              {t("continue")}
             </button>
           </form>
         ) : (
           <form onSubmit={onActivate} className="flex flex-col gap-4">
-            <h2 className="font-semibold text-slate-700">Your pet</h2>
+            <h2 className="font-semibold text-slate-700">{t("yourPet")}</h2>
 
             {/* Foto */}
             <button
@@ -199,7 +205,7 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
               ) : (
                 <span className="flex flex-col items-center gap-1 text-sm">
                   <ImagePlus className="h-6 w-6" />
-                  Add a photo
+                  {t("addPhoto")}
                 </span>
               )}
             </button>
@@ -213,7 +219,7 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
 
             <input
               className={inputClass}
-              placeholder="Pet's name"
+              placeholder={t("petNamePlaceholder")}
               value={petName}
               onChange={(e) => setPetName(e.target.value)}
               required
@@ -226,7 +232,7 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
             >
               {SPECIES_OPTIONS.map((s) => (
                 <option key={s.value} value={s.value}>
-                  {s.label}
+                  {ts(s.value)}
                 </option>
               ))}
             </select>
@@ -234,7 +240,7 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
             <input
               className={inputClass}
               type="tel"
-              placeholder="Emergency contact (optional)"
+              placeholder={t("emergencyPlaceholder")}
               value={emergencyPhone}
               onChange={(e) => setEmergencyPhone(e.target.value)}
             />
@@ -246,7 +252,7 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
                 onChange={(e) => setGdpr(e.target.checked)}
                 className="mt-1"
               />
-              <span>I agree to the processing of my data (GDPR).</span>
+              <span>{t("gdpr")}</span>
             </label>
 
             {error && <p className="text-sm text-taloa-alert">{error}</p>}
@@ -260,7 +266,7 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
                 }}
                 className="h-12 flex-1 rounded-input border border-slate-300 font-medium text-slate-600 hover:bg-slate-50"
               >
-                Back
+                {tc("back")}
               </button>
               <button
                 type="submit"
@@ -269,10 +275,10 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
               >
                 {loading ? (
                   <>
-                    <Spinner /> Activating…
+                    <Spinner /> {t("activating")}
                   </>
                 ) : (
-                  "Activate tag"
+                  t("activateTag")
                 )}
               </button>
             </div>

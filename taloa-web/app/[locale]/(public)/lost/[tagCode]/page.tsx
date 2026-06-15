@@ -10,13 +10,14 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import Image from "next/image";
-import Link from "next/link";
 
 import { ContactOwnerButtons } from "@/components/public/ContactOwnerButtons";
 import { FoundReportSection } from "@/components/public/FoundReportSection";
 import { ShareButton } from "@/components/public/ShareButton";
+import { Link } from "@/i18n/navigation";
 import { getPublicTag } from "@/lib/api/public";
 
 export const dynamic = "force-dynamic";
@@ -54,21 +55,23 @@ async function absoluteUrl(path: string): Promise<string> {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ tagCode: string }>;
+  params: Promise<{ locale: string; tagCode: string }>;
 }): Promise<Metadata> {
-  const { tagCode } = await params;
+  const { locale, tagCode } = await params;
+  const t = await getTranslations({ locale, namespace: "lost" });
   const tag = await getPublicTag(tagCode).catch(() => null);
 
   if (!tag || tag.status !== "lost" || !tag.pet) {
-    return { title: "TALOA — Lost pet" };
+    return { title: t("metaFallback") };
   }
 
   const name = tag.pet.name;
   const area = tag.lost?.last_seen_area;
-  const title = `LOST: ${name}${area ? ` — ${area}` : ""}`;
+  const title = area
+    ? t("metaTitleArea", { name, area })
+    : t("metaTitle", { name });
   const description =
-    tag.lost?.description ??
-    `${name} is missing. If you have seen ${name}, please contact the owner.`;
+    tag.lost?.description ?? t("metaDescFallback", { name });
   const images = tag.pet.photo_url ? [{ url: tag.pet.photo_url }] : [];
 
   return {
@@ -84,12 +87,13 @@ export async function generateMetadata({
   };
 }
 
-function Shell({ children }: { children: React.ReactNode }) {
+async function Shell({ children }: { children: React.ReactNode }) {
+  const tc = await getTranslations("common");
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col gap-4 p-4">
       {children}
       <footer className="mt-auto py-4 text-center text-xs text-slate-400">
-        Powered by TALOA — taloa.ie
+        {tc("poweredBy")}
       </footer>
     </main>
   );
@@ -98,9 +102,11 @@ function Shell({ children }: { children: React.ReactNode }) {
 export default async function LostPosterPage({
   params,
 }: {
-  params: Promise<{ tagCode: string }>;
+  params: Promise<{ locale: string; tagCode: string }>;
 }) {
   const { tagCode } = await params;
+  const t = await getTranslations("lost");
+  const tc = await getTranslations("common");
   const tag = await getPublicTag(tagCode).catch(() => null);
 
   // Tag inexistente
@@ -108,12 +114,10 @@ export default async function LostPosterPage({
     return (
       <Shell>
         <div className="mt-10 rounded-card bg-white p-8 text-center shadow-sm">
-          <h1 className="text-xl font-bold text-slate-800">Tag not found</h1>
-          <p className="mt-2 text-slate-500">
-            We couldn&apos;t find a TALOA tag with this code.
-          </p>
+          <h1 className="text-xl font-bold text-slate-800">{t("notFoundTitle")}</h1>
+          <p className="mt-2 text-slate-500">{t("notFoundBody")}</p>
           <Link href="/" className="mt-4 inline-block font-medium text-taloa-primary">
-            Go to taloa.ie
+            {tc("goToTaloa")}
           </Link>
         </div>
       </Shell>
@@ -127,17 +131,15 @@ export default async function LostPosterPage({
       <Shell>
         <div className="mt-10 rounded-card border border-taloa-primary/20 bg-taloa-primary/5 p-8 text-center">
           <h1 className="text-xl font-bold text-slate-800">
-            {name ? `${name} is no longer marked as lost` : "This pet is safe"}
+            {name ? t("noLongerLostTitle", { name }) : t("safeTitle")}
           </h1>
-          <p className="mt-2 text-slate-600">
-            Good news — this pet is not currently missing.
-          </p>
+          <p className="mt-2 text-slate-600">{t("noLongerLostBody")}</p>
           {tag.status === "active" && (
             <Link
               href={`/t/${tag.tag_code}`}
               className="mt-4 inline-block font-medium text-taloa-primary"
             >
-              View pet profile
+              {t("viewProfile")}
             </Link>
           )}
         </div>
@@ -158,7 +160,7 @@ export default async function LostPosterPage({
       {/* Faixa MISSING */}
       <div className="rounded-t-card bg-taloa-alert px-5 py-3 text-center">
         <p className="text-2xl font-extrabold uppercase tracking-[0.2em] text-white">
-          Missing
+          {t("missing")}
         </p>
       </div>
 
@@ -195,7 +197,7 @@ export default async function LostPosterPage({
               <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-taloa-alert" />
               <div>
                 <p className="font-semibold text-slate-800">
-                  Last seen: {tag.lost.last_seen_area}
+                  {t("lastSeen", { area: tag.lost.last_seen_area })}
                 </p>
                 {lastSeenDate && (
                   <p className="text-sm text-slate-500">{lastSeenDate}</p>

@@ -1,6 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { createPublicLead } from "@/lib/api/leads";
@@ -25,6 +26,8 @@ export function ServiceLeadModal({
   onClose: () => void;
   onSuccess: () => void;
 }) {
+  const t = useTranslations("services");
+  const tc = useTranslations("common");
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -53,7 +56,7 @@ export function ServiceLeadModal({
       });
       onSuccess();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : tc("somethingWentWrong"));
       setBusy(false);
     }
   }
@@ -63,53 +66,53 @@ export function ServiceLeadModal({
       <div className="max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-card bg-white p-5 shadow-lg sm:rounded-card">
         <div className="mb-1 flex items-center justify-between">
           <h2 className="text-lg font-bold text-slate-800">{serviceLabel}</h2>
-          <button onClick={onClose} aria-label="Close" className="text-slate-400">
+          <button onClick={onClose} aria-label={t("close")} className="text-slate-400">
             <X className="h-5 w-5" />
           </button>
         </div>
         <p className="mb-4 text-sm text-slate-500">
-          Tell us a bit about you and we&apos;ll help with {petName}.
+          {t("modalIntro", { petName })}
         </p>
 
         <form onSubmit={onSubmit} className="flex flex-col gap-3">
           <div>
-            <label className={labelClass}>Name</label>
+            <label className={labelClass}>{t("name")}</label>
             <input
               className={inputClass}
               value={form.name}
               onChange={(e) => set("name", e.target.value)}
-              placeholder="Your name"
+              placeholder={t("namePlaceholder")}
               required
             />
           </div>
           <div>
-            <label className={labelClass}>Email</label>
+            <label className={labelClass}>{t("email")}</label>
             <input
               className={inputClass}
               type="email"
               value={form.email}
               onChange={(e) => set("email", e.target.value)}
-              placeholder="you@example.com"
+              placeholder={t("emailPlaceholder")}
               required
             />
           </div>
           <div>
-            <label className={labelClass}>Phone</label>
+            <label className={labelClass}>{t("phone")}</label>
             <input
               className={inputClass}
               type="tel"
               value={form.phone}
               onChange={(e) => set("phone", e.target.value)}
-              placeholder="Optional"
+              placeholder={t("phoneOptional")}
             />
           </div>
           <div>
-            <label className={labelClass}>Message</label>
+            <label className={labelClass}>{t("message")}</label>
             <textarea
               className={`${inputClass} min-h-20 resize-none`}
               value={form.message}
               onChange={(e) => set("message", e.target.value)}
-              placeholder="Optional — anything we should know?"
+              placeholder={t("messagePlaceholder")}
             />
           </div>
 
@@ -121,7 +124,7 @@ export function ServiceLeadModal({
               onClick={onClose}
               className="h-12 flex-1 rounded-input border border-slate-300 font-medium text-slate-600 hover:bg-slate-50"
             >
-              Cancel
+              {t("cancel")}
             </button>
             <button
               type="submit"
@@ -130,10 +133,10 @@ export function ServiceLeadModal({
             >
               {busy ? (
                 <>
-                  <Spinner /> Sending…
+                  <Spinner /> {t("sending")}
                 </>
               ) : (
-                "Send request"
+                t("sendRequest")
               )}
             </button>
           </div>

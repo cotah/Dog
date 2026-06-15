@@ -1,14 +1,17 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { Link } from "@/i18n/navigation";
 import { apiFetch, ApiError } from "@/lib/api/client";
 import { createClient } from "@/lib/supabase/client";
 import { Spinner } from "@/components/ui/Spinner";
 
 export default function SignupPage() {
+  const t = useTranslations("signup");
+  const tc = useTranslations("common");
   const router = useRouter();
   const [form, setForm] = useState({
     name: "",
@@ -29,7 +32,7 @@ export default function SignupPage() {
     setError(null);
 
     if (!form.gdpr) {
-      setError("You must accept the privacy terms (GDPR) to continue.");
+      setError(t("mustAcceptGdpr"));
       return;
     }
     setLoading(true);
@@ -54,7 +57,7 @@ export default function SignupPage() {
         password: form.password,
       });
       if (signInError) {
-        setError("Account created. Please log in.");
+        setError(t("accountCreatedLogin"));
         setLoading(false);
         router.push("/login");
         return;
@@ -64,7 +67,7 @@ export default function SignupPage() {
       router.refresh();
     } catch (err) {
       const message =
-        err instanceof ApiError ? err.message : "Something went wrong.";
+        err instanceof ApiError ? err.message : tc("somethingWentWrong");
       setError(message);
       setLoading(false);
     }
@@ -74,16 +77,14 @@ export default function SignupPage() {
     <main className="flex min-h-screen items-center justify-center p-6">
       <div className="w-full max-w-sm rounded-card bg-white p-8 shadow-sm">
         <h1 className="mb-1 text-2xl font-bold text-taloa-primary">
-          Create your account
+          {t("title")}
         </h1>
-        <p className="mb-6 text-sm text-slate-500">
-          Smart safety for your pet, starting in Dublin.
-        </p>
+        <p className="mb-6 text-sm text-slate-500">{t("subtitle")}</p>
 
         <form onSubmit={onSubmit} className="flex flex-col gap-4">
           <div>
             <label className="mb-1 block text-sm font-medium" htmlFor="name">
-              Name
+              {t("name")}
             </label>
             <input
               id="name"
@@ -97,7 +98,7 @@ export default function SignupPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium" htmlFor="email">
-              Email
+              {t("email")}
             </label>
             <input
               id="email"
@@ -111,7 +112,7 @@ export default function SignupPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium" htmlFor="phone">
-              Phone
+              {t("phone")}
             </label>
             <input
               id="phone"
@@ -124,7 +125,7 @@ export default function SignupPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium" htmlFor="password">
-              Password
+              {t("password")}
             </label>
             <input
               id="password"
@@ -135,7 +136,7 @@ export default function SignupPage() {
               onChange={(e) => update("password", e.target.value)}
               className="w-full rounded-input border border-slate-300 px-3 py-2 outline-none focus:border-taloa-primary"
             />
-            <p className="mt-1 text-xs text-slate-400">Minimum 8 characters.</p>
+            <p className="mt-1 text-xs text-slate-400">{t("minChars")}</p>
           </div>
 
           <label className="flex items-start gap-2 text-sm text-slate-600">
@@ -145,7 +146,7 @@ export default function SignupPage() {
               onChange={(e) => update("gdpr", e.target.checked)}
               className="mt-1"
             />
-            <span>I agree to the processing of my data (GDPR).</span>
+            <span>{t("gdpr")}</span>
           </label>
 
           {error && <p className="text-sm text-taloa-alert">{error}</p>}
@@ -157,18 +158,18 @@ export default function SignupPage() {
           >
             {loading ? (
               <>
-                <Spinner /> Creating…
+                <Spinner /> {t("creating")}
               </>
             ) : (
-              "Create account"
+              t("submit")
             )}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-slate-500">
-          Already have an account?{" "}
+          {t("haveAccount")}{" "}
           <Link href="/login" className="font-medium text-taloa-primary">
-            Log in
+            {t("loginLink")}
           </Link>
         </p>
       </div>

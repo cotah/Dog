@@ -1,4 +1,5 @@
 import { AlertTriangle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import type { LostInfo } from "@/types/tag";
 
@@ -21,26 +22,27 @@ export function LostPetBanner({
   petName: string;
   lost: LostInfo | null;
 }) {
+  const t = useTranslations("banner");
   const lastSeen = formatDate(lost?.last_seen_at ?? null);
 
   return (
     <div className="rounded-card bg-taloa-alert p-5 text-white shadow-sm">
       <div className="flex items-center gap-2">
         <AlertTriangle className="h-6 w-6 animate-pulse" />
-        <h2 className="text-xl font-bold uppercase tracking-wide">
-          This pet is lost
-        </h2>
+        <h2 className="text-xl font-bold uppercase tracking-wide">{t("title")}</h2>
       </div>
       <p className="mt-2 text-white/90">
-        <strong>{petName}</strong> is missing. If you found this pet, please
-        contact the owner right away.
+        {t.rich("body", {
+          name: petName,
+          b: (chunks) => <strong>{chunks}</strong>,
+        })}
       </p>
 
       {(lost?.last_seen_area || lastSeen || lost?.description) && (
         <div className="mt-3 space-y-1 rounded-input bg-white/15 p-3 text-sm">
           {lost?.last_seen_area && (
             <p>
-              <span className="font-semibold">Last seen:</span>{" "}
+              <span className="font-semibold">{t("lastSeen")}</span>{" "}
               {lost.last_seen_area}
               {lastSeen ? ` (${lastSeen})` : ""}
             </p>
