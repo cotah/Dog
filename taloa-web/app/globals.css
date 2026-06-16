@@ -10,3 +10,23 @@ body {
   @apply bg-taloa-bg text-slate-800 antialiased;
   font-family: var(--font-inter, Inter), system-ui, sans-serif;
 }
+
+/* Tipografia limpa para paginas de texto legal (/privacy, /terms). */
+.legal h2 {
+  @apply mb-2 mt-6 text-base font-semibold text-slate-800;
+}
+.legal p {
+  @apply mb-3 text-sm leading-relaxed text-slate-600;
+}
+.legal ul {
+  @apply mb-3 ml-5 list-disc text-sm leading-relaxed text-slate-600;
+}
+.legal li {
+  @apply mb-1;
+}
+.legal strong {
+  @apply font-semibold text-slate-700;
+}
+.legal a {
+  @apply font-medium text-taloa-primary underline;
+}
