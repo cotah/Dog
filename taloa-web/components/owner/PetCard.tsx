@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { TagStatusBadge } from "@/components/public/TagStatusBadge";
+import { track } from "@/lib/analytics";
 import { markFound, markLost } from "@/lib/api/owner";
 import type { PetSummary } from "@/types/owner";
 
@@ -26,6 +27,7 @@ export function PetCard({ pet }: { pet: PetSummary }) {
     setError(null);
     try {
       await markLost(pet.id);
+      track("lost_mode_activated", { species: pet.species });
       setConfirmingLost(false);
       router.refresh();
     } catch (e) {

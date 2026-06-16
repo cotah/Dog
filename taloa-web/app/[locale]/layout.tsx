@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import { notFound } from "next/navigation";
 
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
+import { PostHogProvider } from "@/providers/PostHogProvider";
 import { routing } from "@/i18n/routing";
 
 import "../globals.css";
@@ -61,10 +62,12 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={inter.variable}>
       <body>
-        <NextIntlClientProvider>
-          <LocaleSwitcher />
-          {children}
-        </NextIntlClientProvider>
+        <PostHogProvider>
+          <NextIntlClientProvider>
+            <LocaleSwitcher />
+            {children}
+          </NextIntlClientProvider>
+        </PostHogProvider>
       </body>
     </html>
   );

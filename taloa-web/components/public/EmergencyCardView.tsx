@@ -1,8 +1,11 @@
+"use client";
+
 import { AlertTriangle, Stethoscope } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { ContactOwnerButtons } from "@/components/public/ContactOwnerButtons";
 import { Link } from "@/i18n/navigation";
+import { track } from "@/lib/analytics";
 import type { PublicContact, PublicPet, PublicProfile } from "@/types/tag";
 
 function CriticalBlock({
@@ -29,10 +32,12 @@ export function EmergencyCardView({
   pet,
   profile,
   contact,
+  tagCode,
 }: {
   pet: PublicPet;
   profile: PublicProfile | null;
   contact: PublicContact | null;
+  tagCode?: string;
 }) {
   const t = useTranslations("emergencyCard");
   const tf = useTranslations("found");
@@ -67,12 +72,18 @@ export function EmergencyCardView({
       </div>
 
       {/* Botoes de emergencia grandes */}
-      <ContactOwnerButtons contact={contact} />
+      <ContactOwnerButtons contact={contact} tagCode={tagCode} />
       <Link
         href={{
           pathname: "/directory",
           query: { category: "vet_emergency", emergency_24h: "true" },
         }}
+        onClick={() =>
+          track("emergency_vets_clicked", {
+            tag_code: tagCode,
+            source: "emergency_card",
+          })
+        }
         className="flex h-14 items-center justify-center gap-2 rounded-input border-2 border-taloa-alert text-lg font-semibold text-taloa-alert hover:bg-taloa-alert/5"
       >
         <Stethoscope className="h-5 w-5" />

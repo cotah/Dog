@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { PricingButton } from "@/components/public/PricingButton";
+import { TrackEvent } from "@/components/analytics/TrackEvent";
 import { Link } from "@/i18n/navigation";
 import { getPlans } from "@/lib/api/billing";
 import type { Plan } from "@/types/billing";
@@ -116,6 +117,7 @@ export default async function PricingPage({
 
   return (
     <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 px-4 py-10">
+      <TrackEvent event="pricing_page_viewed" />
       <header className="text-center">
         <Link href="/" className="text-sm font-medium text-taloa-primary">
           {t("back")}

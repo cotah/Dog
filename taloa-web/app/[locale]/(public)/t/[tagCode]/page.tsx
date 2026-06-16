@@ -11,6 +11,7 @@ import { TravelIdCard } from "@/components/public/TravelIdCard";
 import { HabitatIdCard } from "@/components/public/HabitatIdCard";
 import { EmergencyCardView } from "@/components/public/EmergencyCardView";
 import { TaloaChat } from "@/components/ai/TaloaChat";
+import { TrackEvent } from "@/components/analytics/TrackEvent";
 import { Link } from "@/i18n/navigation";
 import { getPublicTag, logScan } from "@/lib/api/public";
 
@@ -149,6 +150,19 @@ export default async function TagPage({
 
   const tagType = tag.tag_type ?? "collar_tag";
 
+  // Analytics: scan da tag (sem PII — so identificadores tecnicos).
+  const scanEvent = (
+    <TrackEvent
+      event="tag_scanned"
+      props={{
+        tag_code: tag.tag_code,
+        status: tag.status,
+        tag_type: tagType,
+        species: tag.pet.species,
+      }}
+    />
+  );
+
   // Reunite Flow (Etapa 22): em tags active/lost o chat entra em modo "reunite"
   // (abre sozinho para finders, conduz as 3 perguntas e notifica o dono).
   const chat = (
@@ -170,10 +184,12 @@ export default async function TagPage({
   if (tagType === "emergency_card") {
     return (
       <Shell>
+        {scanEvent}
         <EmergencyCardView
           pet={tag.pet}
           profile={tag.profile}
           contact={tag.contact}
+          tagCode={tag.tag_code}
         />
         {chat}
       </Shell>
@@ -183,6 +199,7 @@ export default async function TagPage({
   // ── COLLAR / CAT / TRAVEL / HABITAT ── perfil padrao + secao por tipo.
   return (
     <Shell>
+      {scanEvent}
       {tag.status === "lost" && (
         <LostPetBanner petName={tag.pet.name} lost={tag.lost} />
       )}
@@ -194,7 +211,7 @@ export default async function TagPage({
       )}
       {tagType === "travel_id" && <TravelIdCard profile={tag.profile} />}
 
-      <ContactOwnerButtons contact={tag.contact} />
+      <ContactOwnerButtons contact={tag.contact} tagCode={tag.tag_code} />
 
       <FoundReportSection tagCode={tag.tag_code} />
 

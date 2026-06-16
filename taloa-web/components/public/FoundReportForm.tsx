@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 
 import { createFoundReport, uploadFoundPhoto } from "@/lib/api/found";
+import { track } from "@/lib/analytics";
 import { Spinner } from "@/components/ui/Spinner";
 
 const inputClass =
@@ -77,6 +78,11 @@ export function FoundReportForm({
         photo_url: photoUrl,
         location_lat: coords?.lat,
         location_lng: coords?.lng,
+        location_granted: coords !== null,
+      });
+      track("found_pet_submitted", {
+        tag_code: tagCode,
+        has_photo: photoFile !== null,
         location_granted: coords !== null,
       });
       onSuccess();

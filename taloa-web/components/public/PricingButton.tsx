@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { useRouter } from "@/i18n/navigation";
+import { track } from "@/lib/analytics";
 import { apiFetch } from "@/lib/api/client";
 import { createClient } from "@/lib/supabase/client";
 import { Spinner } from "@/components/ui/Spinner";
@@ -27,6 +28,7 @@ export function PricingButton({
   async function onClick() {
     setError(null);
     setLoading(true);
+    track("plan_subscribe_clicked", { plan });
     try {
       const supabase = createClient();
       const {

@@ -1,11 +1,20 @@
+"use client";
+
 import { Mail, MessageCircle, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { track } from "@/lib/analytics";
 import type { PublicContact } from "@/types/tag";
 
 // Botoes de contato — grandes (min 48px) e em destaque. "Call Owner" e o
 // elemento mais visivel do perfil publico.
-export function ContactOwnerButtons({ contact }: { contact: PublicContact | null }) {
+export function ContactOwnerButtons({
+  contact,
+  tagCode,
+}: {
+  contact: PublicContact | null;
+  tagCode?: string;
+}) {
   const t = useTranslations("contact");
 
   if (!contact) return null;
@@ -20,6 +29,7 @@ export function ContactOwnerButtons({ contact }: { contact: PublicContact | null
       {hasPhone && (
         <a
           href={`tel:${contact.phone}`}
+          onClick={() => track("call_owner_clicked", { tag_code: tagCode })}
           className="flex h-14 items-center justify-center gap-2 rounded-input bg-taloa-primary text-lg font-semibold text-white hover:bg-taloa-secondary"
         >
           <Phone className="h-5 w-5" />
@@ -32,6 +42,7 @@ export function ContactOwnerButtons({ contact }: { contact: PublicContact | null
           href={`https://wa.me/${contact.whatsapp}`}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => track("whatsapp_owner_clicked", { tag_code: tagCode })}
           className="flex h-14 items-center justify-center gap-2 rounded-input border-2 border-taloa-primary text-lg font-semibold text-taloa-primary hover:bg-taloa-primary/5"
         >
           <MessageCircle className="h-5 w-5" />

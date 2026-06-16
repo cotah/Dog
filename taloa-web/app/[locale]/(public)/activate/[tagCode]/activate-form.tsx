@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 
 import { activateTag, uploadPetPhoto } from "@/lib/api/activate";
+import { track } from "@/lib/analytics";
 import { SPECIES_OPTIONS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 import { Spinner } from "@/components/ui/Spinner";
@@ -87,6 +88,8 @@ export function ActivateForm({ tagCode }: { tagCode: string }) {
         },
         pet: { name: petName, species, photo_url: photoUrl },
       });
+
+      track("tag_activated", { tag_code: tagCode, species });
 
       // Cria a sessao (best-effort) e leva ao perfil publico recem-ativado
       const supabase = createClient();

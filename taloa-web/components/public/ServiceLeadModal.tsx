@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { createPublicLead } from "@/lib/api/leads";
+import { track } from "@/lib/analytics";
 import { Spinner } from "@/components/ui/Spinner";
 import { Link } from "@/i18n/navigation";
 
@@ -63,6 +64,10 @@ export function ServiceLeadModal({
         contact_email: form.email,
         contact_phone: form.phone || undefined,
         message: form.message || undefined,
+      });
+      track("service_lead_submitted", {
+        service_type: serviceType,
+        tag_code: tagCode,
       });
       onSuccess();
     } catch (err) {

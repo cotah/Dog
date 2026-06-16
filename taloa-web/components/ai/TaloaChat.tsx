@@ -10,6 +10,7 @@ import {
   hasActiveSession,
   streamChat,
 } from "@/lib/api/ai";
+import { track } from "@/lib/analytics";
 
 export function TaloaChat({
   context = "general",
@@ -28,6 +29,8 @@ export function TaloaChat({
   const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  // Reunite: dispara reunite_flow_completed uma unica vez (3a resposta do finder).
+  const reuniteTrackedRef = useRef(false);
 
   const isReunite = context === "reunite";
   const petName =
@@ -80,6 +83,16 @@ export function TaloaChat({
     // Adiciona um placeholder do assistant que sera preenchido pelo stream.
     setMessages([...history, { role: "assistant", content: "" }]);
     setStreaming(true);
+
+    // Reunite Flow: ao chegar a 3a resposta do finder consideramos as 3
+    // perguntas respondidas. Dispara uma unica vez (sem PII).
+    if (isReunite && !reuniteTrackedRef.current) {
+      const finderAnswers = history.filter((m) => m.role === "user").length;
+      if (finderAnswers >= 3) {
+        reuniteTrackedRef.current = true;
+        track("reunite_flow_completed", { tag_code: tagCode });
+      }
+    }
 
     await streamChat(
       {
