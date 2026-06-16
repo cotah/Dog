@@ -305,5 +305,43 @@
         "Premium tags for all your pets"
       ]
     }
+  },
+  "directory": {
+    "title": "Find pet services in Dublin",
+    "subtitle": "Trusted local services for every pet",
+    "search_placeholder": "Search by name or service...",
+    "disclaimer": "TALOA provides this directory for information only. Always call to confirm availability.",
+    "taloa_partner": "TALOA Partner",
+    "verified": "Verified",
+    "open_24h": "Open 24h",
+    "call_now": "Call Now",
+    "visit_website": "Visit Website",
+    "no_results": "No services found matching your filters.",
+    "all_categories": "All Services",
+    "all_areas": "All areas",
+    "all_species": "All species",
+    "only_24h": "24h only",
+    "clear_filters": "Clear filters",
+    "result_count": "{count} services",
+    "cat": {
+      "vet_emergency": "Emergency Vet",
+      "vet_general": "Veterinarian",
+      "vet_exotic": "Exotic Vet",
+      "grooming": "Grooming",
+      "dog_walking": "Dog Walker",
+      "dog_daycare": "Dog Daycare",
+      "dog_hotel": "Pet Hotel",
+      "pet_sitting": "Pet Sitting",
+      "training": "Training",
+      "pet_shop": "Pet Shop",
+      "fresh_food": "Fresh Food",
+      "homemade_treats": "Homemade Treats",
+      "taxi_dog": "Taxi Dog",
+      "travel_services": "Travel Services",
+      "insurance": "Pet Insurance",
+      "photography": "Pet Photography",
+      "dog_fashion": "Pet Fashion",
+      "other": "Other"
+    }
   }
 }

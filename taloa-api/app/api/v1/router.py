@@ -3,10 +3,12 @@ from fastapi import APIRouter
 
 from app.api.v1.routes import (
     admin,
+    admin_directory,
     admin_tags,
     ai,
     auth,
     billing,
+    directory,
     found,
     leads,
     owner,
@@ -30,6 +32,8 @@ api_router.include_router(leads.router)
 api_router.include_router(admin.router)
 api_router.include_router(admin_tags.router)
 api_router.include_router(vets.router)
+api_router.include_router(directory.router)
+api_router.include_router(admin_directory.router)
 api_router.include_router(ai.router)
 api_router.include_router(billing.router)
 api_router.include_router(webhooks.router)

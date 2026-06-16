@@ -1,4 +1,4 @@
-import { QrCode } from "lucide-react";
+import { QrCode, Store } from "lucide-react";
 import Link from "next/link";
 
 import { FoundReportsPanel } from "@/components/admin/FoundReportsPanel";
@@ -58,6 +58,12 @@ export default async function AdminDashboard() {
           <p className="text-sm text-slate-400">Control panel</p>
         </div>
         <div className="flex items-center gap-2">
+          <Link
+            href="/admin/directory"
+            className="flex items-center gap-1 rounded-input border border-taloa-primary px-3 py-2 text-sm font-medium text-taloa-primary hover:bg-taloa-primary/5"
+          >
+            <Store className="h-4 w-4" /> Directory
+          </Link>
           <Link
             href="/admin/tags/generate"
             className="flex items-center gap-1 rounded-input bg-taloa-primary px-3 py-2 text-sm font-medium text-white hover:bg-taloa-secondary"

@@ -69,7 +69,10 @@ export function EmergencyCardView({
       {/* Botoes de emergencia grandes */}
       <ContactOwnerButtons contact={contact} />
       <Link
-        href="/emergency"
+        href={{
+          pathname: "/directory",
+          query: { category: "vet_emergency", emergency_24h: "true" },
+        }}
         className="flex h-14 items-center justify-center gap-2 rounded-input border-2 border-taloa-alert text-lg font-semibold text-taloa-alert hover:bg-taloa-alert/5"
       >
         <Stethoscope className="h-5 w-5" />

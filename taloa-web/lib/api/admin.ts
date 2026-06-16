@@ -1,5 +1,6 @@
 import { apiFetch } from "@/lib/api/client";
 import type { VetPayload } from "@/types/admin";
+import type { ProviderPayload } from "@/types/directory";
 
 export function updateLeadStatus(leadId: string, status: string) {
   return apiFetch(`/v1/admin/leads/${leadId}`, {
@@ -34,4 +35,23 @@ export function updateTagType(tagCode: string, tagType: string) {
     method: "PATCH",
     body: JSON.stringify({ tag_type: tagType }),
   });
+}
+
+// ── Partners Directory (Etapa 23) ──
+export function createProvider(data: ProviderPayload) {
+  return apiFetch(`/v1/admin/directory`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateProvider(id: string, data: Partial<ProviderPayload>) {
+  return apiFetch(`/v1/admin/directory/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+}
+
+export function deleteProvider(id: string) {
+  return apiFetch(`/v1/admin/directory/${id}`, { method: "DELETE" });
 }

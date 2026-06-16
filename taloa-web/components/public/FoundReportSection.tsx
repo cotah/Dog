@@ -43,7 +43,10 @@ export function FoundReportSection({ tagCode }: { tagCode: string }) {
           {t("iFoundThisPet")}
         </button>
         <Link
-          href="/emergency"
+          href={{
+            pathname: "/directory",
+            query: { category: "vet_emergency", emergency_24h: "true" },
+          }}
           className="flex h-12 items-center justify-center gap-2 rounded-input border border-slate-300 text-sm font-medium text-slate-600 hover:bg-slate-50"
         >
           <Stethoscope className="h-4 w-4" />
