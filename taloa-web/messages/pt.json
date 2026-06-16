@@ -166,7 +166,8 @@
     "close": "Fechar",
     "cancel": "Cancelar",
     "sending": "Enviando…",
-    "sendRequest": "Enviar pedido"
+    "sendRequest": "Enviar pedido",
+    "findProvider": "Ou encontre um prestador em Dublin"
   },
   "share": {
     "shareTitle": "Ajude a encontrar {petName}",

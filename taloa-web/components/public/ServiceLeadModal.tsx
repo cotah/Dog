@@ -1,15 +1,25 @@
 "use client";
 
-import { X } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { createPublicLead } from "@/lib/api/leads";
 import { Spinner } from "@/components/ui/Spinner";
+import { Link } from "@/i18n/navigation";
 
 const inputClass =
   "w-full rounded-input border border-slate-300 px-3 py-2.5 outline-none focus:border-taloa-primary";
 const labelClass = "mb-1 block text-sm font-medium text-slate-600";
+
+// Mapeia o service_type do lead para a categoria correspondente no /directory.
+// (so "daycare" difere: vira "dog_daycare").
+const DIRECTORY_CATEGORY: Record<string, string> = {
+  dog_walking: "dog_walking",
+  grooming: "grooming",
+  training: "training",
+  daycare: "dog_daycare",
+};
 
 export function ServiceLeadModal({
   serviceType,
@@ -70,9 +80,20 @@ export function ServiceLeadModal({
             <X className="h-5 w-5" />
           </button>
         </div>
-        <p className="mb-4 text-sm text-slate-500">
+        <p className="mb-3 text-sm text-slate-500">
           {t("modalIntro", { petName })}
         </p>
+
+        {/* Alternativa: navegar direto ao diretorio na categoria certa. */}
+        <Link
+          href={{
+            pathname: "/directory",
+            query: { category: DIRECTORY_CATEGORY[serviceType] ?? "other" },
+          }}
+          className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-taloa-primary hover:underline"
+        >
+          {t("findProvider")} <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
 
         <form onSubmit={onSubmit} className="flex flex-col gap-3">
           <div>

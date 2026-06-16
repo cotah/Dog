@@ -166,7 +166,8 @@
     "close": "Close",
     "cancel": "Cancel",
     "sending": "Sending…",
-    "sendRequest": "Send request"
+    "sendRequest": "Send request",
+    "findProvider": "Or find a provider in Dublin"
   },
   "share": {
     "shareTitle": "Help find {petName}",
