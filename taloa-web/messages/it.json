@@ -109,7 +109,9 @@
     "noLongerLostBody": "Good news — this pet is not currently missing.",
     "viewProfile": "View pet profile",
     "missing": "Missing",
-    "lastSeen": "Last seen: {area}"
+    "lastSeen": "Last seen: {area}",
+    "qrCaption": "Scansiona per aprire questa pagina",
+    "qrAlt": "Codice QR di {name}"
   },
   "banner": {
     "title": "This pet is lost",

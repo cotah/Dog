@@ -36,6 +36,18 @@ def _make_qr_image(url: str):
     return qr.make_image(fill_color="black", back_color="white")
 
 
+def qr_png(code: str) -> bytes:
+    """PNG do QR de uma tag (codifica a URL publica /t/CODE).
+
+    Usado no poster de lost mode e em qualquer lugar que precise exibir o QR.
+    """
+    img = _make_qr_image(_tag_url(code))
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    buf.seek(0)
+    return buf.getvalue()
+
+
 def next_number() -> int:
     sb = get_service_client()
     res = (

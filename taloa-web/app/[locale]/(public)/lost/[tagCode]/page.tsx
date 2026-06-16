@@ -22,6 +22,8 @@ import { getPublicTag } from "@/lib/api/public";
 
 export const dynamic = "force-dynamic";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
 const SPECIES_ICON: Record<string, LucideIcon> = {
   dog: Dog,
   cat: Cat,
@@ -217,6 +219,20 @@ export default async function LostPosterPage({
 
       {/* Reportar avistamento / encontrei */}
       <FoundReportSection tagCode={tag.tag_code} />
+
+      {/* QR Code da tag — para imprimir / partilhar o cartaz */}
+      <div className="flex flex-col items-center gap-2 rounded-card bg-white p-5 shadow-sm">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={`${API_URL}/v1/tags/${tag.tag_code}/qr.png`}
+          alt={t("qrAlt", { name: pet.name })}
+          width={160}
+          height={160}
+          className="h-40 w-40"
+        />
+        <p className="text-center text-xs text-slate-500">{t("qrCaption")}</p>
+        <p className="text-xs font-medium text-slate-400">{tag.tag_code}</p>
+      </div>
     </Shell>
   );
 }
