@@ -19,7 +19,7 @@ PUBLIC_COLS = (
     "id,name,category,description,phone,website,address,area,eircode,"
     "species_supported,emergency_24h,hours,price_range,languages,"
     "is_verified,is_featured,is_taloa_partner,partner_discount,"
-    "photo_url,logo_url,rating,review_count"
+    "photo_url,logo_url,rating,review_count,latitude,longitude"
 )
 
 

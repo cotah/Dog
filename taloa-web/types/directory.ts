@@ -23,6 +23,8 @@ export interface PublicProvider {
   logo_url: string | null;
   rating: number | null;
   review_count: number;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 export interface AdminProvider extends PublicProvider {
@@ -58,6 +60,8 @@ export interface ProviderPayload {
   logo_url?: string | null;
   rating?: number | null;
   review_count?: number;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 export interface CategoryCount {

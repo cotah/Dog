@@ -28,6 +28,8 @@ function emptyForm() {
     address: "",
     area: "",
     eircode: "",
+    latitude: "",
+    longitude: "",
     species: "",
     languages: "",
     hours: "",
@@ -94,6 +96,8 @@ export function DirectoryManager({ providers }: { providers: AdminProvider[] }) 
       address: p.address ?? "",
       area: p.area ?? "",
       eircode: p.eircode ?? "",
+      latitude: p.latitude != null ? String(p.latitude) : "",
+      longitude: p.longitude != null ? String(p.longitude) : "",
       species: (p.species_supported ?? []).join(", "),
       languages: (p.languages ?? []).join(", "),
       hours: p.hours ?? "",
@@ -130,6 +134,8 @@ export function DirectoryManager({ providers }: { providers: AdminProvider[] }) 
         address: form.address || null,
         area: form.area || null,
         eircode: form.eircode || null,
+        latitude: form.latitude ? Number(form.latitude) : null,
+        longitude: form.longitude ? Number(form.longitude) : null,
         species_supported: csv(form.species),
         languages: csv(form.languages),
         hours: form.hours || null,
@@ -233,6 +239,8 @@ export function DirectoryManager({ providers }: { providers: AdminProvider[] }) 
             <input className={inputClass} placeholder="Area (e.g. Dublin 4)" value={form.area} onChange={(e) => set("area", e.target.value)} />
             <input className={inputClass} placeholder="Address" value={form.address} onChange={(e) => set("address", e.target.value)} />
             <input className={inputClass} placeholder="Eircode" value={form.eircode} onChange={(e) => set("eircode", e.target.value)} />
+            <input className={inputClass} type="number" step="any" min="-90" max="90" placeholder="Latitude (e.g. 53.3498)" value={form.latitude} onChange={(e) => set("latitude", e.target.value)} />
+            <input className={inputClass} type="number" step="any" min="-180" max="180" placeholder="Longitude (e.g. -6.2603)" value={form.longitude} onChange={(e) => set("longitude", e.target.value)} />
             <input className={inputClass} placeholder="Species (comma: dog, cat, reptile)" value={form.species} onChange={(e) => set("species", e.target.value)} />
             <input className={inputClass} placeholder="Languages (comma: en, pt)" value={form.languages} onChange={(e) => set("languages", e.target.value)} />
             <input className={inputClass} placeholder="Hours" value={form.hours} onChange={(e) => set("hours", e.target.value)} />

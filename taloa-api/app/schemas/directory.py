@@ -42,6 +42,8 @@ class PublicProvider(BaseModel):
     logo_url: str | None = None
     rating: float | None = None
     review_count: int = 0
+    latitude: float | None = None
+    longitude: float | None = None
 
 
 class AdminProvider(PublicProvider):
@@ -83,6 +85,8 @@ class ProviderCreate(BaseModel):
     logo_url: str | None = Field(default=None, max_length=500)
     rating: float | None = Field(default=None, ge=0, le=5)
     review_count: int = Field(default=0, ge=0)
+    latitude: float | None = Field(default=None, ge=-90, le=90)
+    longitude: float | None = Field(default=None, ge=-180, le=180)
 
 
 class ProviderUpdate(BaseModel):
@@ -111,3 +115,5 @@ class ProviderUpdate(BaseModel):
     logo_url: str | None = Field(default=None, max_length=500)
     rating: float | None = Field(default=None, ge=0, le=5)
     review_count: int | None = Field(default=None, ge=0)
+    latitude: float | None = Field(default=None, ge=-90, le=90)
+    longitude: float | None = Field(default=None, ge=-180, le=180)

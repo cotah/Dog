@@ -7,6 +7,7 @@ import { useMemo, useState } from "react";
 import { DIRECTORY_CATEGORIES } from "@/lib/directory";
 import type { CategoryCount, PublicProvider } from "@/types/directory";
 
+import { DirectoryMap } from "./DirectoryMap";
 import { ProviderCard } from "./ProviderCard";
 
 function speciesKey(s: string): string {
@@ -160,6 +161,10 @@ export function DirectoryBrowser({
           )}
         </div>
       </div>
+
+      {/* Mapa: pins dos providers (filtrados) que tem coordenadas.
+          Mobile-first — fica acima da lista. */}
+      <DirectoryMap providers={visible} />
 
       <p className="text-xs text-slate-400">
         {t("result_count", { count: visible.length })}
