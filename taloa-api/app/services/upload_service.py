@@ -18,7 +18,8 @@ ALLOWED_TYPES = {
 }
 
 
-async def upload_pet_photo(file: UploadFile) -> str:
+async def _store_image(file: UploadFile, folder: str) -> str:
+    """Valida (tipo/tamanho) e grava a imagem no bucket publico. Retorna a URL."""
     content_type = (file.content_type or "").lower()
     if content_type not in ALLOWED_TYPES:
         raise HTTPException(
@@ -34,7 +35,7 @@ async def upload_pet_photo(file: UploadFile) -> str:
         )
 
     ext = ALLOWED_TYPES[content_type]
-    path = f"pets/{uuid.uuid4()}.{ext}"
+    path = f"{folder}/{uuid.uuid4()}.{ext}"
 
     sb = get_service_client()
     try:
@@ -48,3 +49,12 @@ async def upload_pet_photo(file: UploadFile) -> str:
         )
 
     return sb.storage.from_(BUCKET).get_public_url(path)
+
+
+async def upload_pet_photo(file: UploadFile) -> str:
+    return await _store_image(file, "pets")
+
+
+async def upload_provider_image(file: UploadFile) -> str:
+    """Logo/foto de provider do directory (Etapa 23) — pasta providers/."""
+    return await _store_image(file, "providers")

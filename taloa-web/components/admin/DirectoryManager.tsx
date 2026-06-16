@@ -1,11 +1,16 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Image as ImageIcon, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
-import { createProvider, deleteProvider, updateProvider } from "@/lib/api/admin";
+import {
+  createProvider,
+  deleteProvider,
+  updateProvider,
+  uploadProviderImage,
+} from "@/lib/api/admin";
 import { DIRECTORY_CATEGORIES } from "@/lib/directory";
 import type { AdminProvider, ProviderPayload } from "@/types/directory";
 
@@ -47,11 +52,28 @@ export function DirectoryManager({ providers }: { providers: AdminProvider[] }) 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<Form>(emptyForm());
   const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [catFilter, setCatFilter] = useState("");
 
   function set<K extends keyof Form>(key: K, value: Form[K]) {
     setForm((p) => ({ ...p, [key]: value }));
+  }
+
+  async function onPickImage(
+    field: "logo_url" | "photo_url",
+    file: File | undefined,
+  ) {
+    if (!file) return;
+    setUploading(field);
+    try {
+      const url = await uploadProviderImage(file);
+      set(field, url);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(null);
+    }
   }
 
   function openCreate() {
@@ -215,10 +237,48 @@ export function DirectoryManager({ providers }: { providers: AdminProvider[] }) 
             <input className={inputClass} placeholder="Languages (comma: en, pt)" value={form.languages} onChange={(e) => set("languages", e.target.value)} />
             <input className={inputClass} placeholder="Hours" value={form.hours} onChange={(e) => set("hours", e.target.value)} />
             <input className={inputClass} placeholder="Price range (€, €€, €€€)" value={form.price_range} onChange={(e) => set("price_range", e.target.value)} />
-            <input className={inputClass} placeholder="Logo URL" value={form.logo_url} onChange={(e) => set("logo_url", e.target.value)} />
-            <input className={inputClass} placeholder="Photo URL" value={form.photo_url} onChange={(e) => set("photo_url", e.target.value)} />
             <input className={inputClass} type="number" step="0.1" min="0" max="5" placeholder="Rating (0-5)" value={form.rating} onChange={(e) => set("rating", e.target.value)} />
             <input className={inputClass} placeholder="Partner discount" value={form.partner_discount} onChange={(e) => set("partner_discount", e.target.value)} />
+          </div>
+          {/* Upload de logo/foto para o Storage (com fallback p/ colar URL). */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {(["logo_url", "photo_url"] as const).map((field) => (
+              <div key={field} className="flex items-center gap-2">
+                {form[field] ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={form[field]}
+                    alt={field}
+                    className="h-12 w-12 shrink-0 rounded-input object-cover"
+                  />
+                ) : (
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-input bg-slate-100 text-slate-300">
+                    <ImageIcon className="h-5 w-5" />
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <label className="inline-flex cursor-pointer items-center gap-1 rounded-input border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50">
+                    {uploading === field
+                      ? "Uploading…"
+                      : field === "logo_url"
+                        ? "Upload logo"
+                        : "Upload photo"}
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      className="hidden"
+                      onChange={(e) => onPickImage(field, e.target.files?.[0])}
+                    />
+                  </label>
+                  <input
+                    className={`${inputClass} mt-1 text-xs`}
+                    placeholder={field === "logo_url" ? "or paste Logo URL" : "or paste Photo URL"}
+                    value={form[field]}
+                    onChange={(e) => set(field, e.target.value)}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
           <input className={inputClass} placeholder="Notes (internal)" value={form.notes} onChange={(e) => set("notes", e.target.value)} />
           <div className="flex flex-wrap gap-4 text-sm text-slate-600">

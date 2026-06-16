@@ -1,9 +1,9 @@
 """Rotas admin do Partners Directory (Etapa 23) — CRUD de providers."""
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
 
 from app.core.security import require_admin
 from app.schemas.directory import AdminProvider, ProviderCreate, ProviderUpdate
-from app.services import directory_service
+from app.services import directory_service, upload_service
 
 router = APIRouter(
     prefix="/admin/directory",
@@ -22,6 +22,13 @@ def admin_list(
     return directory_service.admin_list(
         category=category, search=search, limit=limit, offset=offset
     )
+
+
+@router.post("/upload")
+async def admin_upload_image(file: UploadFile = File(...)) -> dict:
+    """Upload de logo/foto de provider para o Storage. Retorna a URL publica."""
+    url = await upload_service.upload_provider_image(file)
+    return {"url": url}
 
 
 @router.post("", response_model=AdminProvider, status_code=status.HTTP_201_CREATED)
