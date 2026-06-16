@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 
 import { SiteFooter } from "@/components/SiteFooter";
+import { TagCodeSearch } from "@/components/public/TagCodeSearch";
 
 export async function generateMetadata({
   params,
@@ -44,6 +45,14 @@ export default async function HomePage({
             {tc("signup")}
           </Link>
         </div>
+
+        {/* Busca por codigo digitavel — alternativa ao scan do QR */}
+        <section className="mt-6 flex w-full max-w-md flex-col items-center gap-3 border-t border-slate-200 pt-8">
+          <h2 className="text-sm font-medium text-slate-500">
+            {t("tagSearchTitle")}
+          </h2>
+          <TagCodeSearch />
+        </section>
       </main>
       <SiteFooter />
     </div>

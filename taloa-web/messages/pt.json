@@ -23,7 +23,10 @@
     "metaTitle": "TALOA — Segurança Inteligente para Pets em Dublin",
     "metaDescription": "A TALOA dá ao seu pet uma tag de segurança inteligente. Se ele se perder, quem o encontrar consegue falar com você em segundos. Começando em Dublin.",
     "title": "TALOA",
-    "subtitle": "Segurança inteligente para pets — começando em Dublin."
+    "subtitle": "Segurança inteligente para pets — começando em Dublin.",
+    "tagSearchTitle": "Tem uma tag TALOA?",
+    "tagSearchPlaceholder": "Digite o código da tag (ex: TAL-000001)",
+    "tagSearchButton": "Encontrar pet"
   },
   "tag": {
     "lostTitle": "{name} está perdido — TALOA",
