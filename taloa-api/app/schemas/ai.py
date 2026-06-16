@@ -3,7 +3,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-ChatContext = Literal["emergency", "lost_pet", "general"]
+ChatContext = Literal["emergency", "lost_pet", "general", "reunite"]
 
 
 class ChatMessage(BaseModel):
@@ -18,3 +18,5 @@ class ChatRequest(BaseModel):
     # Contexto dinamico opcional (dados publicos do pet quando na pagina da tag).
     pet_context: dict | None = None
     tag_code: str | None = None
+    # Reunite Flow (Etapa 22): telefone opcional que o finder deixa para o dono.
+    finder_phone: str | None = Field(default=None, max_length=40)

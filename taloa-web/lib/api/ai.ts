@@ -8,7 +8,7 @@ export interface ChatMessage {
   role: ChatRole;
   content: string;
 }
-export type ChatContext = "emergency" | "lost_pet" | "general";
+export type ChatContext = "emergency" | "lost_pet" | "general" | "reunite";
 
 // session_id persistente por dispositivo (usado para o limite de 20/sessao).
 export function getSessionId(): string {
@@ -21,11 +21,27 @@ export function getSessionId(): string {
   return id;
 }
 
+// Reunite Flow: o chat abre sozinho para finders (deslogados). Se houver sessao
+// ativa (provavelmente o dono), nao incomodamos com a abertura automatica.
+export async function hasActiveSession(): Promise<boolean> {
+  try {
+    const supabase = createClient();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    return !!session;
+  } catch {
+    return false;
+  }
+}
+
 export interface StreamChatParams {
   messages: ChatMessage[];
   context: ChatContext;
   petContext?: Record<string, unknown> | null;
   tagCode?: string | null;
+  // Reunite Flow: telefone opcional que o finder deixa para o dono contactar.
+  finderPhone?: string | null;
 }
 
 export interface StreamHandlers {
@@ -60,6 +76,7 @@ export async function streamChat(
         context: params.context,
         pet_context: params.petContext ?? null,
         tag_code: params.tagCode ?? null,
+        finder_phone: params.finderPhone ?? null,
       }),
     });
   } catch {

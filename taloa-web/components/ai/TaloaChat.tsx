@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   type ChatContext,
   type ChatMessage,
+  hasActiveSession,
   streamChat,
 } from "@/lib/api/ai";
 
@@ -23,13 +24,50 @@ export function TaloaChat({
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
+  const [phone, setPhone] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const isReunite = context === "reunite";
+  const petName =
+    typeof petContext?.name === "string" && petContext.name
+      ? (petContext.name as string)
+      : t("thisPet");
+
+  // Mensagem inicial do assistente, contextualizada com o nome do pet.
+  function seedGreeting() {
+    setMessages((prev) =>
+      prev.length === 0
+        ? [{ role: "assistant", content: t("reuniteGreeting", { petName }) }]
+        : prev,
+    );
+  }
+
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, [messages, streaming]);
+
+  // Reunite: abre sozinho para finders (deslogados). Se houver sessao ativa
+  // (provavelmente o dono vendo o proprio pet), nao abre automaticamente.
+  useEffect(() => {
+    if (!isReunite) return;
+    let cancelled = false;
+    hasActiveSession().then((loggedIn) => {
+      if (cancelled || loggedIn) return;
+      setOpen(true);
+      seedGreeting();
+    });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isReunite, petName]);
+
+  function openChat() {
+    setOpen(true);
+    if (isReunite) seedGreeting();
+  }
 
   async function onSend(e: React.FormEvent) {
     e.preventDefault();
@@ -44,7 +82,13 @@ export function TaloaChat({
     setStreaming(true);
 
     await streamChat(
-      { messages: history, context, petContext, tagCode },
+      {
+        messages: history,
+        context,
+        petContext,
+        tagCode,
+        finderPhone: isReunite ? phone.trim() || null : null,
+      },
       {
         onDelta: (chunk) =>
           setMessages((prev) => {
@@ -80,7 +124,7 @@ export function TaloaChat({
       {!open && (
         <button
           type="button"
-          onClick={() => setOpen(true)}
+          onClick={openChat}
           className="fixed bottom-5 right-5 z-40 flex h-14 items-center gap-2 rounded-full bg-taloa-primary px-5 font-semibold text-white shadow-lg hover:bg-taloa-secondary"
           aria-label={t("askTaloa")}
         >
@@ -152,27 +196,44 @@ export function TaloaChat({
               )}
             </div>
 
-            {/* Input */}
-            <form
-              onSubmit={onSend}
-              className="flex items-center gap-2 border-t border-slate-100 p-3"
-            >
-              <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder={t("inputPlaceholder")}
-                disabled={streaming}
-                className="h-12 flex-1 rounded-input border border-slate-300 px-3 outline-none focus:border-taloa-primary disabled:bg-slate-50"
-              />
-              <button
-                type="submit"
-                disabled={streaming || !input.trim()}
-                aria-label={t("send")}
-                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-input bg-taloa-primary text-white hover:bg-taloa-secondary disabled:opacity-50"
+            {/* Footer: telefone opcional (reunite) + input */}
+            <div className="border-t border-slate-100">
+              {isReunite && (
+                <div className="px-3 pt-2">
+                  <input
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    type="tel"
+                    inputMode="tel"
+                    placeholder={t("phonePlaceholder")}
+                    aria-label={t("phoneLabel")}
+                    className="h-10 w-full rounded-input border border-slate-200 px-3 text-sm outline-none focus:border-taloa-primary"
+                  />
+                  <p className="mt-1 text-[11px] text-slate-400">{t("phoneLabel")}</p>
+                </div>
+              )}
+
+              <form
+                onSubmit={onSend}
+                className="flex items-center gap-2 p-3"
               >
-                <Send className="h-5 w-5" />
-              </button>
-            </form>
+                <input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder={t("inputPlaceholder")}
+                  disabled={streaming}
+                  className="h-12 flex-1 rounded-input border border-slate-300 px-3 outline-none focus:border-taloa-primary disabled:bg-slate-50"
+                />
+                <button
+                  type="submit"
+                  disabled={streaming || !input.trim()}
+                  aria-label={t("send")}
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-input bg-taloa-primary text-white hover:bg-taloa-secondary disabled:opacity-50"
+                >
+                  <Send className="h-5 w-5" />
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       )}

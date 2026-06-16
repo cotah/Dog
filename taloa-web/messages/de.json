@@ -206,7 +206,11 @@
     "greeting1": "Hi! I'm TALOA AI.",
     "greeting2": "Ask me about pet safety, lost & found, or finding a vet in Dublin.",
     "inputPlaceholder": "Type your question…",
-    "send": "Send"
+    "send": "Send",
+    "reuniteGreeting": "Hi! It looks like you found {petName}. I’m TALOA AI — I’m here to help you reunite them with their owner safely. Is {petName} with you right now?",
+    "thisPet": "this pet",
+    "phoneLabel": "Your phone (optional) — so the owner can reach you",
+    "phonePlaceholder": "Your phone number"
   },
   "species": {
     "dog": "Dog",
@@ -265,11 +269,41 @@
     "maxPets": "{count, plural, one {# pet} other {# pets}}",
     "premiumTagDesc": "A premium-quality TALOA tag without a subscription.",
     "features": {
-      "free": ["Basic pet profile", "Lost Mode", "Secure owner contact", "QR + NFC tag"],
-      "plus": ["Everything in Free", "Scan alerts", "Scan history", "Vet directory", "Basic AI assistant", "Partner discounts"],
-      "club": ["Everything in Plus", "Premium tag included", "Welcome Kit", "Emergency Card", "Travel ID", "Full AI assistant", "Paw Points", "Quarterly Care Drop"],
-      "exotic_club": ["Everything in Club", "Habitat ID", "Specialist vet directory", "Species-specific content"],
-      "family": ["Everything in Club", "Up to 5 pets", "Premium tags for all your pets"]
+      "free": [
+        "Basic pet profile",
+        "Lost Mode",
+        "Secure owner contact",
+        "QR + NFC tag"
+      ],
+      "plus": [
+        "Everything in Free",
+        "Scan alerts",
+        "Scan history",
+        "Vet directory",
+        "Basic AI assistant",
+        "Partner discounts"
+      ],
+      "club": [
+        "Everything in Plus",
+        "Premium tag included",
+        "Welcome Kit",
+        "Emergency Card",
+        "Travel ID",
+        "Full AI assistant",
+        "Paw Points",
+        "Quarterly Care Drop"
+      ],
+      "exotic_club": [
+        "Everything in Club",
+        "Habitat ID",
+        "Specialist vet directory",
+        "Species-specific content"
+      ],
+      "family": [
+        "Everything in Club",
+        "Up to 5 pets",
+        "Premium tags for all your pets"
+      ]
     }
   }
 }

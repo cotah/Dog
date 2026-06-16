@@ -174,6 +174,75 @@ def send_found_alert(
     )
 
 
+def send_reunite_summary(
+    *,
+    owner_email: str | None,
+    pet_name: str | None,
+    tag_code: str,
+    pet_is_ok: str | None = None,
+    location: str | None = None,
+    duration: str | None = None,
+    finder_phone: str | None = None,
+    summary: str | None = None,
+) -> None:
+    """Reunite Flow (Etapa 22): avisa o dono que alguem esta com o pet, com o
+    resumo que o TALOA AI coletou do finder (pet ok? / onde? / por quanto tempo?)
+    e, se houver, o telefone do finder para contato direto."""
+    if not owner_email:
+        return
+    name = pet_name or "your pet"
+    dashboard_url = f"{settings.FRONTEND_URL}/owner/dashboard"
+
+    def _row(label: str, value: str | None) -> str:
+        if not value:
+            return ""
+        return (
+            f'<tr><td style="padding:10px 16px;border-bottom:1px solid #eef2f6;">'
+            f'<span style="font-size:12px;font-weight:700;text-transform:uppercase;'
+            f'letter-spacing:.4px;color:{ORANGE};">{label}</span><br>'
+            f'<span style="font-size:15px;color:{INK};">{value}</span></td></tr>'
+        )
+
+    rows = "".join(
+        [
+            _row("Is " + name + " OK?", pet_is_ok),
+            _row("Where", location),
+            _row("Finder can stay", duration),
+            _row("Finder's phone", finder_phone),
+        ]
+    )
+    details = ""
+    if rows:
+        details = (
+            '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" '
+            f'style="margin:6px 0 16px;background:{BG};border-radius:8px;">{rows}</table>'
+        )
+    recap_html = ""
+    if summary:
+        recap_html = f'<p style="margin:0 0 14px;">{summary}</p>'
+
+    body = f"""
+      <p style="margin:0 0 14px;">Good news — someone scanned <strong>{name}</strong>'s
+      TALOA tag and our assistant is helping reunite you. Here's what they shared:</p>
+      {recap_html}
+      {details}
+      <p style="margin:0 0 6px;">Open your dashboard to see the full report
+      {"and call the finder" if finder_phone else ""}, and to coordinate the reunion.</p>
+    """
+    html = _layout(
+        heading=f"Someone has {name} — let's reunite them",
+        body_html=body,
+        cta_label="Coordinate the reunion",
+        cta_url=dashboard_url,
+    )
+    _send(
+        to=owner_email,
+        subject=f"Good news — someone has {name}",
+        html=html,
+        log_ctx=f"reunite tag={tag_code}",
+    )
+
+
 def send_lead_notification(*, service_type: str, contact_name: str | None = None) -> None:
     """Notifica o admin (hello@taloa.ie) de um novo lead."""
     name = contact_name or "An existing owner"

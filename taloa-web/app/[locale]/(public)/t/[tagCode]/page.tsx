@@ -149,9 +149,11 @@ export default async function TagPage({
 
   const tagType = tag.tag_type ?? "collar_tag";
 
+  // Reunite Flow (Etapa 22): em tags active/lost o chat entra em modo "reunite"
+  // (abre sozinho para finders, conduz as 3 perguntas e notifica o dono).
   const chat = (
     <TaloaChat
-      context={tag.status === "lost" ? "lost_pet" : "general"}
+      context="reunite"
       tagCode={tag.tag_code}
       petContext={{
         name: tag.pet.name,
