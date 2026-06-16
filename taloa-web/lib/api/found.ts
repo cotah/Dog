@@ -11,6 +11,19 @@ export interface FoundReportPayload {
   location_granted: boolean;
 }
 
+// Upload da foto do pet encontrado (publico — o finder nao esta logado).
+// Vai para o bucket pet-photos na pasta found/.
+export async function uploadFoundPhoto(file: File): Promise<string> {
+  const fd = new FormData();
+  fd.append("file", file);
+  const res = await fetch(`${API_URL}/v1/uploads/found-photo`, {
+    method: "POST",
+    body: fd,
+  });
+  if (!res.ok) throw new Error("Could not upload the photo.");
+  return ((await res.json()) as { url: string }).url;
+}
+
 export async function createFoundReport(
   payload: FoundReportPayload,
 ): Promise<{ message: string }> {

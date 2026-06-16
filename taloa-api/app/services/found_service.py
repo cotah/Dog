@@ -58,4 +58,5 @@ def create_found_report(data: FoundReportCreate) -> None:
         pet_name=pet_name,
         tag_code=data.tag_code,
         found_area=data.found_area,
+        photo_url=data.photo_url,
     )

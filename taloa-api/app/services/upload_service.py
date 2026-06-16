@@ -58,3 +58,8 @@ async def upload_pet_photo(file: UploadFile) -> str:
 async def upload_provider_image(file: UploadFile) -> str:
     """Logo/foto de provider do directory (Etapa 23) — pasta providers/."""
     return await _store_image(file, "providers")
+
+
+async def upload_found_photo(file: UploadFile) -> str:
+    """Foto que o finder tira do pet encontrado — pasta found/."""
+    return await _store_image(file, "found")

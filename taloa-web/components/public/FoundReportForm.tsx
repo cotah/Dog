@@ -4,8 +4,7 @@ import { Check, ImagePlus, MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 
-import { uploadPetPhoto } from "@/lib/api/activate";
-import { createFoundReport } from "@/lib/api/found";
+import { createFoundReport, uploadFoundPhoto } from "@/lib/api/found";
 import { Spinner } from "@/components/ui/Spinner";
 
 const inputClass =
@@ -68,7 +67,7 @@ export function FoundReportForm({
     try {
       let photoUrl: string | undefined;
       if (photoFile) {
-        photoUrl = await uploadPetPhoto(photoFile);
+        photoUrl = await uploadFoundPhoto(photoFile);
       }
       await createFoundReport({
         tag_code: tagCode,
@@ -113,7 +112,8 @@ export function FoundReportForm({
       <input
         ref={fileRef}
         type="file"
-        accept="image/jpeg,image/png,image/webp"
+        accept="image/*"
+        capture="environment"
         onChange={onPickPhoto}
         className="hidden"
       />

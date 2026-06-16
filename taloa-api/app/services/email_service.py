@@ -136,12 +136,22 @@ def send_found_alert(
     pet_name: str | None,
     tag_code: str,
     found_area: str | None = None,
+    photo_url: str | None = None,
 ) -> None:
     """Avisa o dono que alguem encontrou o pet."""
     if not owner_email:
         return
     name = pet_name or "your pet"
     dashboard_url = f"{settings.FRONTEND_URL}/owner/dashboard"
+    photo_html = ""
+    if photo_url:
+        photo_html = f"""
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:4px 0 16px;">
+          <tr><td>
+            <img src="{photo_url}" alt="{name}" width="100%"
+              style="display:block;width:100%;max-height:320px;object-fit:cover;border-radius:10px;" />
+          </td></tr>
+        </table>"""
     area_html = ""
     if found_area:
         area_html = f"""
@@ -156,6 +166,7 @@ def send_found_alert(
     body = f"""
       <p style="margin:0 0 14px;">Someone just reported finding <strong>{name}</strong>
       through their TALOA tag.</p>
+      {photo_html}
       {area_html}
       <p style="margin:0 0 6px;">Open your dashboard to see the full report and the
       finder's contact details.</p>
