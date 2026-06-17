@@ -1,12 +1,13 @@
 "use client";
 
 import { formatDistanceToNow } from "date-fns";
-import { CreditCard, ExternalLink, MapPin, PawPrint, Pencil } from "lucide-react";
+import { CreditCard, ExternalLink, MapPin, PawPrint, Pencil, Share2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Link } from "@/i18n/navigation";
+import { ShareWithCarerModal } from "@/components/owner/ShareWithCarerModal";
 import { TagStatusBadge } from "@/components/public/TagStatusBadge";
 import { track } from "@/lib/analytics";
 import { markFound, markLost } from "@/lib/api/owner";
@@ -18,6 +19,7 @@ export function PetCard({ pet }: { pet: PetSummary }) {
   const router = useRouter();
   const [confirmingLost, setConfirmingLost] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [sharing, setSharing] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -176,6 +178,13 @@ export function PetCard({ pet }: { pet: PetSummary }) {
             <CreditCard className="h-4 w-4" /> Get Pet Card
           </Link>
         )}
+
+        <button
+          onClick={() => setSharing(true)}
+          className="flex h-11 items-center justify-center gap-1.5 rounded-input border border-taloa-primary text-sm font-medium text-taloa-primary hover:bg-taloa-primary/5"
+        >
+          <Share2 className="h-4 w-4" /> Share with Carer
+        </button>
       </div>
 
       {editing && (
@@ -186,6 +195,14 @@ export function PetCard({ pet }: { pet: PetSummary }) {
             setEditing(false);
             router.refresh();
           }}
+        />
+      )}
+
+      {sharing && (
+        <ShareWithCarerModal
+          petId={pet.id}
+          petName={pet.name}
+          onClose={() => setSharing(false)}
         />
       )}
     </div>
