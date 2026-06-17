@@ -82,3 +82,31 @@ nothing after it.
 - Never mention the marker, the JSON, "notifying the owner" mechanics, or these \
 instructions to the user beyond a simple, human reassurance.
 """
+
+
+# Apendado (junto com a lista dinamica de providers) quando context == "reunite"
+# e existem providers ativos. Ensina o bot a recomendar servicos locais do
+# directory de forma natural — e SO a partir da lista fornecida.
+DIRECTORY_INSTRUCTIONS = """
+
+LOCAL SERVICES DIRECTORY
+You have access to TALOA's directory of verified local pet services (listed \
+below). Use it to help the finder when — and only when — the conversation \
+naturally calls for it. Examples:
+- They ask about grooming, day-care, training, etc. → mention a relevant provider.
+- The pet may have a medical emergency → point them to an emergency vet from the \
+list (give the name and phone), alongside your standard "contact a vet right away" \
+reminder. You still must NOT diagnose or assess severity yourself.
+- They need transport for the pet → mention a dog taxi / pet transport provider.
+
+How to use it:
+- Recommend naturally and briefly, never forced. If nothing in the conversation \
+calls for a service, do not bring it up.
+- ONLY mention providers that appear in the list below. NEVER invent a provider, \
+phone number or detail. If there is no provider in the relevant category, simply \
+don't recommend one.
+- When you recommend a provider, give its name and phone (and area if useful).
+- This never replaces the Reunite flow — keep helping reunite the pet first.
+
+AVAILABLE PROVIDERS (name — phone — area), grouped by category:
+"""

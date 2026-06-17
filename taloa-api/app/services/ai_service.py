@@ -16,7 +16,11 @@ from collections.abc import Iterator
 import anthropic
 from fastapi import HTTPException, status
 
-from app.ai.system_prompt import REUNITE_FLOW_INSTRUCTIONS, TALOA_SYSTEM_PROMPT
+from app.ai.system_prompt import (
+    DIRECTORY_INSTRUCTIONS,
+    REUNITE_FLOW_INSTRUCTIONS,
+    TALOA_SYSTEM_PROMPT,
+)
 from app.config import settings
 from app.core.supabase import get_service_client
 from app.schemas.ai import ChatRequest
@@ -28,6 +32,66 @@ logger = logging.getLogger("taloa.ai")
 MAX_MESSAGES_PER_SESSION = settings.AI_MAX_MESSAGES_PER_SESSION  # 20
 MAX_TOKENS = 1024
 REUNITE_MARKER = "<<REUNITE_SUMMARY>>"
+
+# Cap de providers injetados no prompt (evita inflar o system prompt).
+DIRECTORY_MAX = 60
+
+# Labels legiveis para as categorias (so exibicao no prompt).
+_CATEGORY_LABELS = {
+    "vet_emergency": "Emergency vets",
+    "vet_general": "Vets (general)",
+    "vet_exotic": "Exotic vets",
+    "grooming": "Grooming",
+    "dog_walking": "Dog walking",
+    "dog_daycare": "Dog day-care",
+    "dog_hotel": "Boarding / dog hotels",
+    "pet_sitting": "Pet sitting",
+    "training": "Training",
+    "pet_shop": "Pet shops",
+    "fresh_food": "Fresh food",
+    "homemade_treats": "Homemade treats",
+    "taxi_dog": "Dog taxi / transport",
+    "travel_services": "Travel services",
+    "insurance": "Insurance",
+    "photography": "Photography",
+    "dog_fashion": "Dog fashion",
+    "other": "Other",
+}
+
+
+def _directory_for_prompt(sb) -> str:
+    """Lista compacta dos providers ativos (nome, telefone, area) por categoria.
+
+    REGRA: NUNCA inclui email (nem o selecionamos). Telefone/area sao publicos
+    (ja aparecem no /directory). Retorna "" se nao houver providers ativos.
+    """
+    res = (
+        sb.table("service_providers")
+        .select("name, category, phone, area")
+        .eq("is_active", True)
+        .order("category")
+        .order("is_featured", desc=True)
+        .order("name")
+        .limit(DIRECTORY_MAX)
+        .execute()
+    )
+    rows = res.data or []
+    if not rows:
+        return ""
+    by_cat: dict[str, list[str]] = {}
+    for r in rows:
+        cat = r.get("category") or "other"
+        bits = [r.get("name") or "Unnamed"]
+        if r.get("phone"):
+            bits.append(str(r["phone"]))
+        if r.get("area"):
+            bits.append(str(r["area"]))
+        by_cat.setdefault(cat, []).append(" — ".join(bits))
+    lines = [
+        f"{_CATEGORY_LABELS.get(cat, cat.replace('_', ' '))}: " + "; ".join(items)
+        for cat, items in by_cat.items()
+    ]
+    return "\n".join(lines)
 
 
 def _reunite_pet_context(sb, tag_code: str | None) -> dict:
@@ -84,6 +148,12 @@ def _build_system_prompt(req: ChatRequest, sb) -> str:
         )
     elif req.context == "reunite":
         parts.append(REUNITE_FLOW_INSTRUCTIONS)
+        # Directory de servicos locais (so no reunite): o bot pode recomendar
+        # providers relevantes de forma natural, a partir desta lista.
+        directory = _directory_for_prompt(sb)
+        if directory:
+            parts.append(DIRECTORY_INSTRUCTIONS)
+            parts.append(directory)
 
     # Contexto do pet. No reunite buscamos server-side (autoritativo, inclui
     # behaviour/allergies); nos demais usamos o pet_context publico do client.
