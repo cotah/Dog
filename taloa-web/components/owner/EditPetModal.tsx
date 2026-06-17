@@ -29,8 +29,10 @@ export function EditPetModal({
     breed_or_morph: pet.breed_or_morph ?? "",
     sex: pet.sex ?? "unknown",
     age_years: pet.age_years?.toString() ?? "",
+    date_of_birth: pet.date_of_birth ?? "",
     colour: pet.colour ?? "",
     microchip: pet.microchip ?? "",
+    vet_phone: pet.vet_phone ?? "",
     allergies: pet.allergies ?? "",
     medication: pet.medication ?? "",
     behaviour: pet.behaviour ?? "",
@@ -81,8 +83,10 @@ export function EditPetModal({
         breed_or_morph: form.breed_or_morph || null,
         sex: form.sex || null,
         age_years: form.age_years ? Number(form.age_years) : null,
+        date_of_birth: form.date_of_birth || null,
         colour: form.colour || null,
         microchip: form.microchip || null,
+        vet_phone: form.vet_phone || null,
         photo_url: photoUrl ?? null,
         allergies: form.allergies || null,
         medication: form.medication || null,
@@ -192,6 +196,24 @@ export function EditPetModal({
             </div>
           </div>
 
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className={labelClass}>Date of birth</label>
+              <input className={inputClass} type="date" value={form.date_of_birth} onChange={(e) => set("date_of_birth", e.target.value)} />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className={labelClass}>Vet name</label>
+              <input className={inputClass} value={form.vet_name} onChange={(e) => set("vet_name", e.target.value)} />
+            </div>
+            <div>
+              <label className={labelClass}>Vet phone</label>
+              <input className={inputClass} type="tel" value={form.vet_phone} onChange={(e) => set("vet_phone", e.target.value)} />
+            </div>
+          </div>
+
           <div>
             <label className={labelClass}>Allergies</label>
             <input className={inputClass} value={form.allergies} onChange={(e) => set("allergies", e.target.value)} />
@@ -219,10 +241,6 @@ export function EditPetModal({
               <p className="text-xs font-semibold uppercase tracking-wide text-taloa-primary">
                 Travel ID
               </p>
-              <div>
-                <label className={labelClass}>Vet</label>
-                <input className={inputClass} value={form.vet_name} onChange={(e) => set("vet_name", e.target.value)} />
-              </div>
               <div>
                 <label className={labelClass}>Travel instructions</label>
                 <textarea className={`${inputClass} min-h-16 resize-none`} value={form.travel_notes} onChange={(e) => set("travel_notes", e.target.value)} />

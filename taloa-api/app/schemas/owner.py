@@ -28,6 +28,7 @@ class PetSummary(BaseModel):
     breed_or_morph: str | None = None
     sex: str | None = None
     age_years: int | None = None
+    date_of_birth: str | None = None
     colour: str | None = None
     microchip: str | None = None
     # campos do perfil (para pre-preencher a edicao)
@@ -37,6 +38,7 @@ class PetSummary(BaseModel):
     public_notes: str | None = None
     emergency_notes: str | None = None
     vet_name: str | None = None
+    vet_phone: str | None = None
     show_phone: bool = True
     show_email: bool = False
     # campos por tag_type (Etapa 19)
@@ -90,6 +92,7 @@ class PetUpdate(BaseModel):
     breed_or_morph: str | None = None
     sex: str | None = None
     age_years: int | None = None
+    date_of_birth: str | None = None
     colour: str | None = None
     microchip: str | None = None
     photo_url: str | None = None
@@ -100,6 +103,7 @@ class PetUpdate(BaseModel):
     public_notes: str | None = None
     emergency_notes: str | None = None
     vet_name: str | None = None
+    vet_phone: str | None = None
     show_phone: bool | None = None
     show_email: bool | None = None
     # campos por tag_type (Etapa 19)

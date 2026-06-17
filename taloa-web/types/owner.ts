@@ -21,6 +21,7 @@ export interface PetSummary {
   breed_or_morph: string | null;
   sex: string | null;
   age_years: number | null;
+  date_of_birth: string | null;
   colour: string | null;
   microchip: string | null;
   allergies: string | null;
@@ -29,6 +30,7 @@ export interface PetSummary {
   public_notes: string | null;
   emergency_notes: string | null;
   vet_name: string | null;
+  vet_phone: string | null;
   show_phone: boolean;
   show_email: boolean;
   // campos por tag_type (Etapa 19)
@@ -87,6 +89,7 @@ export interface PetUpdatePayload {
   breed_or_morph?: string | null;
   sex?: string | null;
   age_years?: number | null;
+  date_of_birth?: string | null;
   colour?: string | null;
   microchip?: string | null;
   photo_url?: string | null;
@@ -96,6 +99,7 @@ export interface PetUpdatePayload {
   public_notes?: string | null;
   emergency_notes?: string | null;
   vet_name?: string | null;
+  vet_phone?: string | null;
   show_phone?: boolean;
   show_email?: boolean;
   // campos por tag_type (Etapa 19)

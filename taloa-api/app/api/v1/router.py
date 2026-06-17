@@ -8,6 +8,7 @@ from app.api.v1.routes import (
     ai,
     auth,
     billing,
+    cards,
     directory,
     found,
     leads,
@@ -34,6 +35,7 @@ api_router.include_router(admin_tags.router)
 api_router.include_router(vets.router)
 api_router.include_router(directory.router)
 api_router.include_router(admin_directory.router)
+api_router.include_router(cards.router)
 api_router.include_router(ai.router)
 api_router.include_router(billing.router)
 api_router.include_router(webhooks.router)

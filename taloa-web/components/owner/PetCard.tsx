@@ -1,11 +1,12 @@
 "use client";
 
 import { formatDistanceToNow } from "date-fns";
-import { ExternalLink, MapPin, PawPrint, Pencil } from "lucide-react";
+import { CreditCard, ExternalLink, MapPin, PawPrint, Pencil } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { Link } from "@/i18n/navigation";
 import { TagStatusBadge } from "@/components/public/TagStatusBadge";
 import { track } from "@/lib/analytics";
 import { markFound, markLost } from "@/lib/api/owner";
@@ -166,6 +167,15 @@ export function PetCard({ pet }: { pet: PetSummary }) {
             </span>
           )}
         </div>
+
+        {pet.tag && (
+          <Link
+            href={`/owner/pets/${pet.id}/card?tag=${pet.tag.tag_code}`}
+            className="flex h-11 items-center justify-center gap-1.5 rounded-input border border-taloa-primary text-sm font-medium text-taloa-primary hover:bg-taloa-primary/5"
+          >
+            <CreditCard className="h-4 w-4" /> Get Pet Card
+          </Link>
+        )}
       </div>
 
       {editing && (
