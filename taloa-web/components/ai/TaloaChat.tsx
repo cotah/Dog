@@ -12,6 +12,9 @@ import {
 } from "@/lib/api/ai";
 import { track } from "@/lib/analytics";
 
+// Reunite: tempo ate o chat abrir sozinho (deixa o finder ver o perfil antes).
+const AUTO_OPEN_DELAY_MS = 15000;
+
 export function TaloaChat({
   context = "general",
   petContext = null,
@@ -31,6 +34,9 @@ export function TaloaChat({
   const scrollRef = useRef<HTMLDivElement>(null);
   // Reunite: dispara reunite_flow_completed uma unica vez (3a resposta do finder).
   const reuniteTrackedRef = useRef(false);
+  // Auto-open: timer dos 15s e flag de "fechado manualmente" (nao reabrir sozinho).
+  const autoOpenTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const dismissedRef = useRef(false);
 
   const isReunite = context === "reunite";
   const petName =
@@ -51,26 +57,59 @@ export function TaloaChat({
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, [messages, streaming]);
 
-  // Reunite: abre sozinho para finders (deslogados). Se houver sessao ativa
-  // (provavelmente o dono vendo o proprio pet), nao abre automaticamente.
+  function clearAutoOpen() {
+    if (autoOpenTimerRef.current) {
+      clearTimeout(autoOpenTimerRef.current);
+      autoOpenTimerRef.current = null;
+    }
+  }
+
+  // Abertura (manual, por evento ou pelo timer): cancela o timer e semeia o reunite.
+  function openChat() {
+    clearAutoOpen();
+    setOpen(true);
+    if (isReunite) seedGreeting();
+  }
+
+  // Fechar manualmente: marca como dispensado para NAO reabrir sozinho depois.
+  function closeChat() {
+    dismissedRef.current = true;
+    clearAutoOpen();
+    setOpen(false);
+  }
+
+  // Reunite (finders deslogados): NAO abre na hora. Abre sozinho apos 15s,
+  // dando tempo para verem o perfil do pet primeiro. Nao abre para o dono
+  // (sessao ativa) nem se a pessoa ja tiver fechado o chat.
   useEffect(() => {
     if (!isReunite) return;
     let cancelled = false;
     hasActiveSession().then((loggedIn) => {
-      if (cancelled || loggedIn) return;
-      setOpen(true);
-      seedGreeting();
+      if (cancelled || loggedIn || dismissedRef.current) return;
+      autoOpenTimerRef.current = setTimeout(() => {
+        if (dismissedRef.current) return;
+        setOpen(true);
+        seedGreeting();
+      }, AUTO_OPEN_DELAY_MS);
     });
     return () => {
       cancelled = true;
+      clearAutoOpen();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReunite, petName]);
 
-  function openChat() {
-    setOpen(true);
-    if (isReunite) seedGreeting();
-  }
+  // "I Found This Pet" (FoundReportSection) dispara este evento: abre o chat
+  // imediatamente, sem esperar os 15s. Acao explicita — abre mesmo se ja fechou.
+  useEffect(() => {
+    if (!isReunite) return;
+    function onOpenRequest() {
+      openChat();
+    }
+    window.addEventListener("taloa:open-chat", onOpenRequest);
+    return () => window.removeEventListener("taloa:open-chat", onOpenRequest);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isReunite]);
 
   async function onSend(e: React.FormEvent) {
     e.preventDefault();
@@ -150,7 +189,7 @@ export function TaloaChat({
       {open && (
         <div
           className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center sm:justify-end sm:p-5"
-          onClick={() => setOpen(false)}
+          onClick={closeChat}
         >
           <div
             className="flex h-[80vh] w-full max-w-md flex-col overflow-hidden rounded-t-card bg-white shadow-xl sm:h-[600px] sm:rounded-card"
@@ -163,7 +202,7 @@ export function TaloaChat({
                 <span className="font-semibold">{t("askTaloa")}</span>
               </div>
               <button
-                onClick={() => setOpen(false)}
+                onClick={closeChat}
                 aria-label={t("closeChat")}
                 className="text-white/80 hover:text-white"
               >

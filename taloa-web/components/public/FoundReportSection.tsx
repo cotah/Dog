@@ -33,7 +33,16 @@ export function FoundReportSection({ tagCode }: { tagCode: string }) {
       <div className="grid grid-cols-2 gap-3">
         <button
           type="button"
-          onClick={() => setOpen((o) => !o)}
+          onClick={() => {
+            const willOpen = !open;
+            setOpen(willOpen);
+            // Ao abrir "I Found This Pet", abre o TaloaChat na hora (sem os 15s).
+            // Dispatch fora do updater de estado (senao React avisa de setState
+            // durante render do outro componente).
+            if (willOpen && typeof window !== "undefined") {
+              window.dispatchEvent(new CustomEvent("taloa:open-chat"));
+            }
+          }}
           className={`flex h-12 items-center justify-center gap-2 rounded-input border text-sm font-medium ${
             open
               ? "border-taloa-primary bg-taloa-primary/5 text-taloa-primary"
