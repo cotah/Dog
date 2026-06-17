@@ -1,8 +1,11 @@
-"""Rotas publicas do Partners Directory (Etapa 23)."""
-from fastapi import APIRouter, HTTPException, Query, status
+"""Rotas publicas do Partners Directory (Etapa 23) + reviews (Etapa 26)."""
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
+from app.core.security import get_current_user
+from app.schemas.auth import CurrentUser
 from app.schemas.directory import CategoryCount, PublicProvider
-from app.services import directory_service
+from app.schemas.review import Review, ReviewCreate
+from app.services import directory_service, review_service
 
 router = APIRouter(prefix="/directory", tags=["directory"])
 
@@ -43,3 +46,23 @@ def get_provider(provider_id: str) -> PublicProvider:
             status_code=status.HTTP_404_NOT_FOUND, detail="Provider not found"
         )
     return provider
+
+
+@router.get("/{provider_id}/reviews", response_model=list[Review])
+def list_reviews(provider_id: str) -> list[Review]:
+    """Reviews publicas de um provider (mais recentes primeiro)."""
+    return review_service.list_reviews(provider_id)
+
+
+@router.post(
+    "/{provider_id}/reviews",
+    response_model=Review,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_review(
+    provider_id: str,
+    body: ReviewCreate,
+    user: CurrentUser = Depends(get_current_user),
+) -> Review:
+    """Cria/atualiza a review do utilizador autenticado (1 por provider)."""
+    return review_service.submit_review(user, provider_id, body)

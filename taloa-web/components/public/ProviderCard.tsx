@@ -1,16 +1,23 @@
+"use client";
+
 import {
   BadgeCheck,
   Clock,
   Globe,
   MapPin,
+  MessageSquarePlus,
   Phone,
   Star,
   Tag as TagIcon,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 
+import { ReviewModal } from "@/components/public/ReviewModal";
 import { CATEGORY_ICON } from "@/lib/directory";
+import { getReviews } from "@/lib/api/reviews";
 import type { PublicProvider } from "@/types/directory";
+import type { Review } from "@/types/review";
 
 function speciesKey(s: string): string {
   return `species${s.charAt(0).toUpperCase()}${s.slice(1)}`;
@@ -18,6 +25,22 @@ function speciesKey(s: string): string {
 
 export function ProviderCard({ provider }: { provider: PublicProvider }) {
   const t = useTranslations("directory");
+  const [showReview, setShowReview] = useState(false);
+  const [reviews, setReviews] = useState<Review[] | null>(null);
+  const [loadingReviews, setLoadingReviews] = useState(false);
+
+  async function toggleReviews() {
+    if (reviews !== null) {
+      setReviews(null);
+      return;
+    }
+    setLoadingReviews(true);
+    try {
+      setReviews(await getReviews(provider.id));
+    } finally {
+      setLoadingReviews(false);
+    }
+  }
   const ts = useTranslations("emergency"); // reaproveita os labels de especie
   const icon = CATEGORY_ICON[provider.category] ?? "⭐";
   const catLabel = t.has(`cat.${provider.category}`)
@@ -145,6 +168,62 @@ export function ProviderCard({ provider }: { provider: PublicProvider }) {
           </a>
         )}
       </div>
+
+      {/* Reviews */}
+      <div className="mt-2 flex items-center justify-between text-sm">
+        <button
+          onClick={() => setShowReview(true)}
+          className="flex items-center gap-1.5 font-medium text-taloa-primary hover:underline"
+        >
+          <MessageSquarePlus className="h-4 w-4" /> {t("leaveReview")}
+        </button>
+        {provider.review_count > 0 && (
+          <button onClick={toggleReviews} className="text-slate-500 hover:underline">
+            {reviews !== null
+              ? t("hideReviews")
+              : t("seeReviews", { count: provider.review_count })}
+          </button>
+        )}
+      </div>
+
+      {loadingReviews && <p className="mt-2 text-xs text-slate-400">…</p>}
+      {reviews !== null && (
+        <ul className="mt-2 flex flex-col gap-2 border-t border-slate-100 pt-2">
+          {reviews.length === 0 ? (
+            <li className="text-xs text-slate-400">{t("noReviews")}</li>
+          ) : (
+            reviews.map((r) => (
+              <li key={r.id} className="text-sm">
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <Star
+                      key={n}
+                      className={`h-3.5 w-3.5 ${
+                        n <= r.rating ? "fill-amber-400 text-amber-400" : "text-slate-200"
+                      }`}
+                    />
+                  ))}
+                  {r.reviewer_name && (
+                    <span className="ml-1 text-xs font-medium text-slate-500">
+                      {r.reviewer_name}
+                    </span>
+                  )}
+                </div>
+                {r.comment && <p className="text-slate-600">{r.comment}</p>}
+              </li>
+            ))
+          )}
+        </ul>
+      )}
+
+      {showReview && (
+        <ReviewModal
+          providerId={provider.id}
+          providerName={provider.name}
+          onClose={() => setShowReview(false)}
+          onSubmitted={() => setReviews(null)}
+        />
+      )}
     </div>
   );
 }

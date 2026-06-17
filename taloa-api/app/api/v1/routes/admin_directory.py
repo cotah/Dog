@@ -3,7 +3,8 @@ from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, 
 
 from app.core.security import require_admin
 from app.schemas.directory import AdminProvider, ProviderCreate, ProviderUpdate
-from app.services import directory_service, upload_service
+from app.schemas.review import Review
+from app.services import directory_service, review_service, upload_service
 
 router = APIRouter(
     prefix="/admin/directory",
@@ -54,3 +55,19 @@ def admin_delete(provider_id: str) -> dict:
             status_code=status.HTTP_404_NOT_FOUND, detail="Provider not found"
         )
     return {"status": "disabled"}
+
+
+@router.get("/{provider_id}/reviews", response_model=list[Review])
+def admin_list_reviews(provider_id: str) -> list[Review]:
+    """Reviews de um provider (para o admin moderar)."""
+    return review_service.list_reviews(provider_id, limit=200)
+
+
+@router.delete("/reviews/{review_id}")
+def admin_delete_review(review_id: str) -> dict:
+    """Hard delete de uma review. O trigger recalcula o rating do provider."""
+    if not review_service.admin_delete(review_id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Review not found"
+        )
+    return {"status": "deleted"}

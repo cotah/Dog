@@ -12,6 +12,7 @@ import {
   uploadProviderImage,
 } from "@/lib/api/admin";
 import { DIRECTORY_CATEGORIES } from "@/lib/directory";
+import { AdminReviewsModal } from "@/components/admin/AdminReviewsModal";
 import type { AdminProvider, ProviderPayload } from "@/types/directory";
 
 const inputClass =
@@ -57,6 +58,7 @@ export function DirectoryManager({ providers }: { providers: AdminProvider[] }) 
   const [uploading, setUploading] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [catFilter, setCatFilter] = useState("");
+  const [reviewsProvider, setReviewsProvider] = useState<AdminProvider | null>(null);
 
   function set<K extends keyof Form>(key: K, value: Form[K]) {
     setForm((p) => ({ ...p, [key]: value }));
@@ -324,6 +326,7 @@ export function DirectoryManager({ providers }: { providers: AdminProvider[] }) 
               <button onClick={() => quickToggle(p, "is_verified")} className={`rounded-input px-2 py-1 text-xs ${p.is_verified ? "bg-taloa-primary/10 text-taloa-primary" : "border border-slate-300 text-slate-500"}`}>Verified</button>
               <button onClick={() => quickToggle(p, "is_featured")} className={`rounded-input px-2 py-1 text-xs ${p.is_featured ? "bg-amber-100 text-amber-600" : "border border-slate-300 text-slate-500"}`}>Featured</button>
               <button onClick={() => quickToggle(p, "is_taloa_partner")} className={`rounded-input px-2 py-1 text-xs ${p.is_taloa_partner ? "bg-taloa-secondary/10 text-taloa-secondary" : "border border-slate-300 text-slate-500"}`}>Partner</button>
+              <button onClick={() => setReviewsProvider(p)} className="rounded-input border border-slate-300 px-2 py-1 text-xs text-slate-600 hover:bg-slate-50">Reviews</button>
               <button onClick={() => openEdit(p)} className="rounded-input border border-slate-300 px-2 py-1 text-xs text-slate-600 hover:bg-slate-50">Edit</button>
               <button onClick={() => onDeactivate(p)} className={`rounded-input px-2 py-1 text-xs font-medium ${p.is_active ? "border border-slate-300 text-slate-600 hover:bg-slate-50" : "bg-taloa-primary text-white"}`}>
                 {p.is_active ? "Deactivate" : "Activate"}
@@ -333,6 +336,14 @@ export function DirectoryManager({ providers }: { providers: AdminProvider[] }) 
         ))}
         {visible.length === 0 && <li className="py-4 text-center text-slate-400">No providers.</li>}
       </ul>
+
+      {reviewsProvider && (
+        <AdminReviewsModal
+          providerId={reviewsProvider.id}
+          providerName={reviewsProvider.name}
+          onClose={() => setReviewsProvider(null)}
+        />
+      )}
     </div>
   );
 }
