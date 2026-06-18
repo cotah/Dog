@@ -350,42 +350,97 @@
     "getStarted": "Começar",
     "buy": "Comprar",
     "maxPets": "{count, plural, one {# pet} other {# pets}}",
-    "premiumTagDesc": "Uma tag TALOA de qualidade premium, sem assinatura.",
+    "premiumTagDesc": "Tag inteligente premium sem assinatura. Todas as funcionalidades públicas incluídas.",
     "features": {
       "free": [
-        "Perfil básico do pet",
-        "Modo Perdido",
-        "Contato seguro com o dono",
-        "Tag QR + NFC"
+        "1 pet",
+        "Tag NFC + QR",
+        "Perfil público do pet com foto e detalhes",
+        "Modo Perdido com faixa de alerta vermelha",
+        "Contato seguro do dono — endereço nunca aparece",
+        "Carteira de Identidade do Pet em PDF",
+        "Relatório de encontrado com foto e localização",
+        "Assistente de IA TALOA (básico)",
+        "Diretório de veterinários de emergência"
       ],
       "plus": [
         "Tudo do Free",
-        "Alertas de scan",
-        "Histórico de scans",
-        "Diretório de vets",
-        "Assistente de IA básico",
-        "Descontos de parceiros"
+        "Até 2 pets",
+        "Alertas de scan — sempre que a sua tag for escaneada",
+        "Histórico completo de scans",
+        "Care Link para pet sitters",
+        "Assistente de IA completo com Reunite Flow",
+        "Tipos de tag Travel ID e Emergency Card",
+        "Selo de membro Plus no perfil",
+        "Diretório de Parceiros com filtros completos",
+        "Promoções exclusivas para membros Plus"
       ],
       "club": [
         "Tudo do Plus",
-        "Tag Premium inclusa",
-        "Welcome Kit",
-        "Emergency Card",
-        "Travel ID",
-        "Assistente de IA completo",
-        "Paw Points",
-        "Care Drop trimestral"
+        "Até 3 pets",
+        "Paw Points — ganhe e troque por serviços gratuitos",
+        "Welcome Kit entregue na sua porta",
+        "Care Drop a cada 3 meses",
+        "Selo dourado de membro Club no perfil",
+        "Acesso antecipado a novas funcionalidades",
+        "Grupo exclusivo de membros Club no WhatsApp",
+        "Sorteios mensais",
+        "Convites para eventos TALOA em Dublin",
+        "Descontos com parceiros de Dublin"
       ],
       "exotic_club": [
         "Tudo do Club",
-        "Habitat ID",
-        "Diretório de vets especializado",
-        "Conteúdo por espécie"
+        "Habitat ID — temperatura, umidade, alimentação, manuseio",
+        "Diretório de vets exóticos filtrado por espécie",
+        "Guia de cuidados por espécie em PDF",
+        "Conteúdo específico por espécie no app",
+        "Selo especial Exotic Club",
+        "Welcome Kit adaptado para pets exóticos",
+        "Descontos em empresas de transporte aéreo",
+        "Descontos em seguro para pets exóticos",
+        "Descontos em consultas online com vet exótico"
       ],
       "family": [
         "Tudo do Club",
         "Até 5 pets",
-        "Tags premium para todos os pets"
+        "Tag Premium inclusa para cada pet",
+        "Welcome Kit para cada pet",
+        "Selo de membro Family no perfil",
+        "5% de desconto extra sobre os descontos Club"
+      ]
+    },
+    "taglines": {
+      "free": "ID inteligente para o seu pet. Grátis para sempre.",
+      "plus": "Para donos que querem controle total.",
+      "club": "Assinatura premium com vantagens reais — entregue na sua porta.",
+      "exotic_club": "Tudo do Club, feito para donos de pets exóticos.",
+      "family": "Benefícios do Club para cada pet da família."
+    },
+    "notIncluded": {
+      "free": [
+        "Alertas de scan",
+        "Histórico de scans",
+        "Care Link para pet sitters",
+        "Paw Points",
+        "Descontos com parceiros",
+        "Welcome Kit"
+      ]
+    },
+    "notIncludedLabel": "Não incluído",
+    "plusWelcomeKitNote": "Welcome Kit em breve",
+    "welcomeKit": {
+      "title": "O que vem no seu Welcome Kit",
+      "subtitle": "Personalizado para o seu pet. Entregue na sua porta quando você assina.",
+      "appliesTo": "Incluído nos planos Club, Exotic Club e Family",
+      "items": [
+        "Coleira personalizada com nome do pet e QR Code",
+        "Bandana personalizada",
+        "Carteira física TALOA com foto do pet",
+        "Garrafa de água portátil",
+        "Saquinhos de cocô personalizados",
+        "Seleção de petiscos",
+        "Brinquedo para o pet",
+        "Carta de boas-vindas escrita à mão para você e o seu pet"
       ]
     }
   },

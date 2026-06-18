@@ -1,4 +1,16 @@
-import { Check } from "lucide-react";
+import {
+  Bone,
+  Check,
+  Cookie,
+  CreditCard,
+  Gift,
+  GlassWater,
+  Mail,
+  Minus,
+  QrCode,
+  Shirt,
+  Trash2,
+} from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
@@ -13,6 +25,19 @@ export const dynamic = "force-dynamic";
 // Linha 1: planos principais. Linha 2: especializados (€14,99).
 const TIERS = ["free", "plus", "club"] as const;
 const MORE_TIERS = ["exotic_club", "family"] as const;
+
+// Icones simples para cada item do Welcome Kit (mesma ordem do array i18n
+// welcomeKit.items). Fallback para Gift se faltar.
+const KIT_ICONS = [
+  QrCode, // coleira personalizada com QR
+  Shirt, // bandana
+  CreditCard, // carteira fisica TALOA
+  GlassWater, // garrafa de agua
+  Trash2, // saquinhos de coco
+  Cookie, // petiscos
+  Bone, // brinquedo
+  Mail, // carta de boas-vindas
+] as const;
 
 export async function generateMetadata({
   params,
@@ -50,14 +75,25 @@ export default async function PricingPage({
     currency: "EUR",
   });
 
+  const rawKit = t.raw("welcomeKit.items");
+  const welcomeKitItems: string[] = Array.isArray(rawKit)
+    ? (rawKit as string[])
+    : [];
+
   function features(name: string): string[] {
     const raw = t.raw(`features.${name}`);
+    return Array.isArray(raw) ? (raw as string[]) : [];
+  }
+
+  function notIncludedList(name: string): string[] {
+    const raw = t.raw(`notIncluded.${name}`);
     return Array.isArray(raw) ? (raw as string[]) : [];
   }
 
   // Card de plano reutilizado nas duas linhas.
   function card(plan: Plan, highlight: boolean) {
     const isFree = plan.name === "free";
+    const excluded = notIncludedList(plan.name);
     return (
       <div
         key={plan.name}
@@ -72,6 +108,9 @@ export default async function PricingPage({
         )}
 
         <h2 className="text-lg font-bold text-slate-800">{plan.display_name}</h2>
+        <p className="mt-1 text-xs text-slate-500">
+          {t(`taglines.${plan.name}`)}
+        </p>
 
         <div className="mt-3 flex items-end gap-1">
           <span className="text-3xl font-extrabold text-slate-900">
@@ -86,14 +125,39 @@ export default async function PricingPage({
           {t("maxPets", { count: plan.max_pets })}
         </p>
 
-        <ul className="mt-5 flex flex-1 flex-col gap-2 text-sm text-slate-600">
-          {features(plan.name).map((f, i) => (
-            <li key={i} className="flex items-start gap-2">
-              <Check className="mt-0.5 h-4 w-4 shrink-0 text-taloa-primary" />
-              <span>{f}</span>
-            </li>
-          ))}
-        </ul>
+        <div className="mt-5 flex flex-1 flex-col gap-3">
+          <ul className="flex flex-col gap-2 text-sm text-slate-600">
+            {features(plan.name).map((f, i) => (
+              <li key={i} className="flex items-start gap-2">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-taloa-primary" />
+                <span>{f}</span>
+              </li>
+            ))}
+          </ul>
+
+          {/* Free: o que NAO esta incluido (cinza, com tracinho) */}
+          {excluded.length > 0 && (
+            <ul className="flex flex-col gap-1.5 border-t border-slate-100 pt-3 text-xs text-slate-400">
+              <li className="font-medium uppercase tracking-wide text-slate-300">
+                {t("notIncludedLabel")}
+              </li>
+              {excluded.map((f, i) => (
+                <li key={i} className="flex items-start gap-2">
+                  <Minus className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-300" />
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {/* Plus: aviso discreto de Welcome Kit em breve */}
+          {plan.name === "plus" && (
+            <p className="flex items-center gap-1.5 border-t border-slate-100 pt-3 text-xs text-slate-400">
+              <Gift className="h-3.5 w-3.5 shrink-0" />
+              {t("plusWelcomeKitNote")}
+            </p>
+          )}
+        </div>
 
         <div className="mt-6">
           {isFree ? (
@@ -139,6 +203,39 @@ export default async function PricingPage({
           {moreTiers.map((plan) => card(plan, false))}
         </section>
       )}
+
+      {/* Welcome Kit — incluido em Club, Exotic Club e Family */}
+      <section className="mt-2 rounded-card border border-slate-200 bg-taloa-bg p-6 sm:p-8">
+        <div className="text-center">
+          <span className="inline-flex items-center gap-1.5 rounded-badge bg-taloa-accent/10 px-3 py-1 text-xs font-semibold text-taloa-accent">
+            <Gift className="h-4 w-4" />
+            {t("welcomeKit.appliesTo")}
+          </span>
+          <h2 className="mt-3 text-2xl font-bold text-taloa-primary">
+            {t("welcomeKit.title")}
+          </h2>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-slate-500">
+            {t("welcomeKit.subtitle")}
+          </p>
+        </div>
+
+        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {welcomeKitItems.map((label, i) => {
+            const Icon = KIT_ICONS[i] ?? Gift;
+            return (
+              <div
+                key={i}
+                className="flex flex-col items-center gap-2 text-center"
+              >
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white text-taloa-primary shadow-sm">
+                  <Icon className="h-5 w-5" />
+                </span>
+                <span className="text-xs text-slate-600">{label}</span>
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
       {/* Rodape: Premium Tag avulsa (pagamento unico) */}
       {premiumTag && (

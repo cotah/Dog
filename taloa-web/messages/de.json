@@ -350,42 +350,97 @@
     "getStarted": "Get started",
     "buy": "Buy now",
     "maxPets": "{count, plural, one {# pet} other {# pets}}",
-    "premiumTagDesc": "A premium-quality TALOA tag without a subscription.",
+    "premiumTagDesc": "Premium smart tag without a subscription. All public features included.",
     "features": {
       "free": [
-        "Basic pet profile",
-        "Lost Mode",
-        "Secure owner contact",
-        "QR + NFC tag"
+        "1 pet",
+        "NFC + QR tag",
+        "Public pet profile with photo and details",
+        "Lost Mode with red alert banner",
+        "Safe owner contact — address never shown",
+        "Pet Identity Card PDF",
+        "Found report with photo and location",
+        "TALOA AI Assistant (basic)",
+        "Emergency vet directory"
       ],
       "plus": [
         "Everything in Free",
-        "Scan alerts",
-        "Scan history",
-        "Vet directory",
-        "Basic AI assistant",
-        "Partner discounts"
+        "Up to 2 pets",
+        "Scan alerts — every time your tag is scanned",
+        "Full scan history",
+        "Care Link for pet sitters",
+        "Full AI Assistant with Reunite Flow",
+        "Travel ID and Emergency Card tag types",
+        "Plus Member badge on profile",
+        "Partners Directory with full filters",
+        "Exclusive Plus member promotions"
       ],
       "club": [
         "Everything in Plus",
-        "Premium tag included",
-        "Welcome Kit",
-        "Emergency Card",
-        "Travel ID",
-        "Full AI assistant",
-        "Paw Points",
-        "Quarterly Care Drop"
+        "Up to 3 pets",
+        "Paw Points — earn and redeem for free services",
+        "Welcome Kit delivered to your door",
+        "Care Drop every 3 months",
+        "Club Member gold badge on profile",
+        "Early access to new features",
+        "Exclusive Club member WhatsApp group",
+        "Monthly prize draws",
+        "Invitations to TALOA events in Dublin",
+        "Member discounts with Dublin partners"
       ],
       "exotic_club": [
         "Everything in Club",
-        "Habitat ID",
-        "Specialist vet directory",
-        "Species-specific content"
+        "Habitat ID — temperature, humidity, feeding, handling",
+        "Exotic vet directory filtered by species",
+        "Species-specific care guide PDF",
+        "Species-specific content in app",
+        "Exotic Club special badge",
+        "Welcome Kit adapted for exotic pets",
+        "Air transport company discounts",
+        "Specialist exotic pet insurance discounts",
+        "Online exotic vet consultation discounts"
       ],
       "family": [
         "Everything in Club",
         "Up to 5 pets",
-        "Premium tags for all your pets"
+        "Premium tag included for every pet",
+        "Welcome Kit for every pet",
+        "Family Member badge on profile",
+        "Extra 5% discount on top of Club discounts"
+      ]
+    },
+    "taglines": {
+      "free": "Smart ID for your pet. Free forever.",
+      "plus": "For owners who want full control.",
+      "club": "Premium membership with real perks — delivered to your door.",
+      "exotic_club": "Everything in Club, built for exotic pet owners.",
+      "family": "Club benefits for every pet in the family."
+    },
+    "notIncluded": {
+      "free": [
+        "Scan alerts",
+        "Scan history",
+        "Care Link for pet sitters",
+        "Paw Points",
+        "Partner discounts",
+        "Welcome Kit"
+      ]
+    },
+    "notIncludedLabel": "Not included",
+    "plusWelcomeKitNote": "Welcome Kit coming soon",
+    "welcomeKit": {
+      "title": "What's in your Welcome Kit",
+      "subtitle": "Personalised for your pet. Delivered to your door when you join.",
+      "appliesTo": "Included with Club, Exotic Club & Family",
+      "items": [
+        "Personalised collar with pet name and QR Code",
+        "Personalised bandana",
+        "TALOA physical ID card with pet photo",
+        "Portable water bottle",
+        "Personalised poo bags",
+        "Treats selection",
+        "Pet toy",
+        "Handwritten welcome letter to you and your pet"
       ]
     }
   },
