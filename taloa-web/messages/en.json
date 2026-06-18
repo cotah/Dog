@@ -442,7 +442,8 @@
         "Pet toy",
         "Handwritten welcome letter to you and your pet"
       ]
-    }
+    },
+    "comingSoon": "Coming soon"
   },
   "directory": {
     "title": "Find pet services in Dublin",

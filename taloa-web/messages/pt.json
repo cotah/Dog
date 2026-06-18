@@ -442,7 +442,8 @@
         "Brinquedo para o pet",
         "Carta de boas-vindas escrita à mão para você e o seu pet"
       ]
-    }
+    },
+    "comingSoon": "Em breve"
   },
   "directory": {
     "title": "Encontre serviços para pets em Dublin",

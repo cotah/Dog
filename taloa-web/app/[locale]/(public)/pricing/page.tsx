@@ -26,6 +26,19 @@ export const dynamic = "force-dynamic";
 const TIERS = ["free", "plus", "club"] as const;
 const MORE_TIERS = ["exotic_club", "family"] as const;
 
+// Indices (na ordem do array features.<plano> do i18n) dos beneficios que
+// ainda nao estao disponiveis e devem mostrar "Coming soon". Usar indice em vez
+// de texto e robusto a traducao. Tudo o que ja existe (digital, Paw Points,
+// Welcome Kit, Care Link, scan alerts/historico, tags) fica sem marca.
+const COMING_SOON_IDX: Record<string, number[]> = {
+  // 4 Care Drop · 7 WhatsApp group · 8 prize draws · 9 TALOA events · 10 partner discounts
+  club: [4, 7, 8, 9, 10],
+  // 7 Air transport · 8 insurance discounts · 9 online exotic vet consultation
+  exotic_club: [7, 8, 9],
+  // 5 extra 5% sobre descontos de parceiros
+  family: [5],
+};
+
 // Icones simples para cada item do Welcome Kit (mesma ordem do array i18n
 // welcomeKit.items). Fallback para Gift se faltar.
 const KIT_ICONS = [
@@ -127,12 +140,22 @@ export default async function PricingPage({
 
         <div className="mt-5 flex flex-1 flex-col gap-3">
           <ul className="flex flex-col gap-2 text-sm text-slate-600">
-            {features(plan.name).map((f, i) => (
-              <li key={i} className="flex items-start gap-2">
-                <Check className="mt-0.5 h-4 w-4 shrink-0 text-taloa-primary" />
-                <span>{f}</span>
-              </li>
-            ))}
+            {features(plan.name).map((f, i) => {
+              const soon = (COMING_SOON_IDX[plan.name] ?? []).includes(i);
+              return (
+                <li key={i} className="flex items-start gap-2">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-taloa-primary" />
+                  <span>
+                    {f}
+                    {soon && (
+                      <span className="ml-1.5 inline-block whitespace-nowrap rounded-badge bg-slate-100 px-1.5 py-0.5 align-middle text-[10px] font-medium text-slate-400">
+                        {t("comingSoon")}
+                      </span>
+                    )}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
 
           {/* Free: o que NAO esta incluido (cinza, com tracinho) */}
