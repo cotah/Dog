@@ -26,7 +26,17 @@
     "subtitle": "Smart safety for pets — starting in Dublin.",
     "tagSearchTitle": "Have a TALOA tag?",
     "tagSearchPlaceholder": "Enter tag code (e.g. TAL-000001)",
-    "tagSearchButton": "Find pet"
+    "tagSearchButton": "Find pet",
+    "clubTitle": "Exclusive perks for Club members",
+    "clubSubtitle": "We're building our Dublin partner network. Club members get exclusive discounts and perks — new partners added monthly.",
+    "clubBadge": "Club & Family members",
+    "clubPerk1Title": "Partner Discounts",
+    "clubPerk1Desc": "Exclusive deals with Dublin pet services — grooming, walking, training and more.",
+    "clubPerk2Title": "Paw Points",
+    "clubPerk2Desc": "Earn points every time you protect your pet. Redeem for free services and quarterly prize draws.",
+    "clubPerk3Title": "Priority Access",
+    "clubPerk3Desc": "First access to new features, new partners and TALOA events in Dublin.",
+    "clubCta": "Join the Club — €11.99/month"
   },
   "card": {
     "cardTitle": "Pet Identity Card",
