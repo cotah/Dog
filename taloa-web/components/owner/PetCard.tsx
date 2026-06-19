@@ -1,7 +1,17 @@
 "use client";
 
 import { formatDistanceToNow } from "date-fns";
-import { CreditCard, ExternalLink, MapPin, PawPrint, Pencil, Share2 } from "lucide-react";
+import {
+  Bell,
+  BookOpen,
+  CreditCard,
+  ExternalLink,
+  MapPin,
+  PawPrint,
+  Pencil,
+  Share2,
+} from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -17,6 +27,7 @@ import { EditPetModal } from "./EditPetModal";
 
 export function PetCard({ pet }: { pet: PetSummary }) {
   const router = useRouter();
+  const td = useTranslations("diary");
   const [confirmingLost, setConfirmingLost] = useState(false);
   const [editing, setEditing] = useState(false);
   const [sharing, setSharing] = useState(false);
@@ -24,6 +35,16 @@ export function PetCard({ pet }: { pet: PetSummary }) {
   const [error, setError] = useState<string | null>(null);
 
   const isLost = pet.tag?.status === "lost";
+
+  const alert = pet.health_alert;
+  const alertText = alert
+    ? alert.days_until < 0
+      ? td("alertOverdue", { title: alert.title })
+      : alert.days_until === 0
+        ? td("alertDueToday", { title: alert.title })
+        : td("alertDueIn", { title: alert.title, count: alert.days_until })
+    : null;
+  const alertRed = alert ? alert.days_until < 0 : false;
 
   async function doLost() {
     setBusy(true);
@@ -103,6 +124,20 @@ export function PetCard({ pet }: { pet: PetSummary }) {
         </div>
       </div>
 
+      {alertText && (
+        <Link
+          href={`/owner/pets/${pet.id}`}
+          className={`mt-3 flex items-center gap-1.5 rounded-input px-3 py-2 text-xs font-medium ${
+            alertRed
+              ? "bg-red-100 text-red-700"
+              : "bg-amber-100 text-amber-700"
+          }`}
+        >
+          <Bell className="h-3.5 w-3.5 shrink-0" />
+          {alertText}
+        </Link>
+      )}
+
       {error && <p className="mt-2 text-sm text-taloa-alert">{error}</p>}
 
       {/* Acoes */}
@@ -170,14 +205,26 @@ export function PetCard({ pet }: { pet: PetSummary }) {
           )}
         </div>
 
-        {pet.tag && (
+        <div className="grid grid-cols-2 gap-2">
           <Link
-            href={`/owner/pets/${pet.id}/card?tag=${pet.tag.tag_code}`}
+            href={`/owner/pets/${pet.id}`}
             className="flex h-11 items-center justify-center gap-1.5 rounded-input border border-taloa-primary text-sm font-medium text-taloa-primary hover:bg-taloa-primary/5"
           >
-            <CreditCard className="h-4 w-4" /> Get Pet Card
+            <BookOpen className="h-4 w-4" /> {td("tabDiary")}
           </Link>
-        )}
+          {pet.tag ? (
+            <Link
+              href={`/owner/pets/${pet.id}/card?tag=${pet.tag.tag_code}`}
+              className="flex h-11 items-center justify-center gap-1.5 rounded-input border border-taloa-primary text-sm font-medium text-taloa-primary hover:bg-taloa-primary/5"
+            >
+              <CreditCard className="h-4 w-4" /> Pet Card
+            </Link>
+          ) : (
+            <span className="flex h-11 items-center justify-center rounded-input border border-slate-200 text-sm text-slate-300">
+              No tag
+            </span>
+          )}
+        </div>
 
         <button
           onClick={() => setSharing(true)}

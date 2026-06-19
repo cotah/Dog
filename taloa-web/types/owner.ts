@@ -13,6 +13,13 @@ export interface TagInfo {
   tag_type: string | null;
 }
 
+export interface HealthAlert {
+  title: string;
+  record_type: string;
+  next_due_date: string;
+  days_until: number; // negativo = expirado
+}
+
 export interface PetSummary {
   id: string;
   name: string;
@@ -47,6 +54,7 @@ export interface PetSummary {
   blood_type: string | null;
   tag: TagInfo | null;
   last_scan: LastScan | null;
+  health_alert: HealthAlert | null;
 }
 
 export interface FoundReportSummary {

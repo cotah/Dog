@@ -2,6 +2,8 @@
 
 Toda acao verifica que o pet pertence ao usuario logado (ou admin).
 """
+from datetime import date, timedelta
+
 from fastapi import HTTPException, status
 
 from app.core.supabase import get_service_client
@@ -9,6 +11,7 @@ from app.schemas.auth import CurrentUser
 from app.schemas.owner import (
     DashboardResponse,
     FoundReportSummary,
+    HealthAlert,
     LastScan,
     OwnerInfo,
     PawPointsSummary,
@@ -17,6 +20,9 @@ from app.schemas.owner import (
     TagInfo,
 )
 from app.services import paw_points_service
+
+# Janela do badge de alerta de saude no pet card (Etapa 27).
+_HEALTH_ALERT_DAYS = 30
 
 PET_FIELDS = {
     "name",
@@ -77,6 +83,35 @@ def _tag_for_pet(sb, pet_id: str) -> dict | None:
         .execute()
     )
     return res.data[0] if res.data else None
+
+
+def _health_alert_for_pet(sb, pet_id: str) -> HealthAlert | None:
+    """Health record mais proximo a vencer dentro de 30 dias (ou ja expirado)."""
+    today = date.today()
+    limit_date = (today + timedelta(days=_HEALTH_ALERT_DAYS)).isoformat()
+    res = (
+        sb.table("pet_health_records")
+        .select("title, record_type, next_due_date")
+        .eq("pet_id", pet_id)
+        .not_.is_("next_due_date", "null")
+        .lte("next_due_date", limit_date)
+        .order("next_due_date", desc=False)
+        .limit(1)
+        .execute()
+    )
+    if not res.data:
+        return None
+    row = res.data[0]
+    try:
+        days = (date.fromisoformat(row["next_due_date"]) - today).days
+    except (ValueError, TypeError):
+        return None
+    return HealthAlert(
+        title=row["title"],
+        record_type=row["record_type"],
+        next_due_date=row["next_due_date"],
+        days_until=days,
+    )
 
 
 def get_dashboard(user: CurrentUser) -> DashboardResponse:
@@ -159,6 +194,7 @@ def get_dashboard(user: CurrentUser) -> DashboardResponse:
                 blood_type=prof.get("blood_type"),
                 tag=TagInfo(**tag) if tag else None,
                 last_scan=last_scan,
+                health_alert=_health_alert_for_pet(sb, p["id"]),
             )
         )
 

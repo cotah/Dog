@@ -20,6 +20,14 @@ class LastScan(BaseModel):
     location_granted: bool = False
 
 
+class HealthAlert(BaseModel):
+    """Proximo health record a vencer (<30 dias) — badge no pet card (Etapa 27)."""
+    title: str
+    record_type: str
+    next_due_date: str
+    days_until: int  # negativo = ja expirado
+
+
 class PetSummary(BaseModel):
     id: str
     name: str
@@ -55,6 +63,7 @@ class PetSummary(BaseModel):
     blood_type: str | None = None
     tag: TagInfo | None = None
     last_scan: LastScan | None = None
+    health_alert: HealthAlert | None = None
 
 
 class FoundReportSummary(BaseModel):
