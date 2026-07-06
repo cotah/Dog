@@ -7,10 +7,11 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 export function createCareShare(
   petId: string,
   duration: CareDuration,
+  showDiary = false,
 ): Promise<CareShare> {
   return apiFetch<CareShare>("/v1/care-shares", {
     method: "POST",
-    body: JSON.stringify({ pet_id: petId, duration }),
+    body: JSON.stringify({ pet_id: petId, duration, show_diary: showDiary }),
   });
 }
 

@@ -103,7 +103,14 @@
     "metaTitle": "Pet care profile — TALOA",
     "metaDescription": "A temporary TALOA care link.",
     "expiredTitle": "Link expired or invalid",
-    "expiredBody": "This care link is no longer active. Ask the owner for a new one."
+    "expiredBody": "This care link is no longer active. Ask the owner for a new one.",
+    "shareDiary": "Share diary with carer",
+    "shareDiaryHint": "Let the carer see recent activities and upcoming vaccines — read only.",
+    "diaryOn": "Diary",
+    "diaryTitle": "Pet Diary",
+    "diaryHealth": "Upcoming health",
+    "diaryRecent": "Recent activity",
+    "readOnly": "Read-only"
   },
   "tag": {
     "lostTitle": "{name} is lost — TALOA",

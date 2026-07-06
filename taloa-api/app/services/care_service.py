@@ -4,7 +4,7 @@ REGRA: o token expira por expires_at e e revogavel por is_active — ambos
 verificados server-side em cada request. Nunca endereco/email do dono;
 telefone do dono SEMPRE visivel no care link.
 """
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 from fastapi import HTTPException, status
 
@@ -12,6 +12,11 @@ from app.config import settings
 from app.core.supabase import get_service_client
 from app.schemas.auth import CurrentUser
 from app.schemas.care import CareProfile, CareShare, CareShareCreate
+from app.services.diary_service import _to_activity, _to_health
+
+# Janela dos health records mostrados ao carer (next_due_date nos proximos N dias).
+_DIARY_HEALTH_WINDOW_DAYS = 60
+_DIARY_ACTIVITY_LIMIT = 10
 
 _DURATION_DAYS = {"3d": 3, "1w": 7, "2w": 14, "1mo": 30}
 
@@ -35,6 +40,7 @@ def _to_share(row: dict) -> CareShare:
         token=row["token"],
         expires_at=row["expires_at"],
         is_active=row.get("is_active", True),
+        show_diary=bool(row.get("show_diary", False)),
         created_at=row.get("created_at"),
         care_url=_care_url(row["token"]),
     )
@@ -53,6 +59,7 @@ def create_share(user: CurrentUser, body: CareShareCreate) -> CareShare:
                 "owner_id": user.id,
                 "expires_at": expires_at,
                 "is_active": True,
+                "show_diary": body.show_diary,
             }
         )
         .execute()
@@ -96,7 +103,7 @@ def get_care(token: str) -> CareProfile:
     now = datetime.now(timezone.utc).isoformat()
     share_res = (
         sb.table("care_shares")
-        .select("pet_id, owner_id, expires_at")
+        .select("pet_id, owner_id, expires_at, show_diary")
         .eq("token", token)
         .eq("is_active", True)
         .gt("expires_at", now)
@@ -137,6 +144,34 @@ def get_care(token: str) -> CareProfile:
     )
     tag = tag_res.data[0] if tag_res.data else {}
 
+    # Diario read-only — so se o dono ativou show_diary neste link. Apenas dados
+    # do PET (atividades + health records); nunca dados privados do dono.
+    show_diary = bool(share.get("show_diary", False))
+    diary_activities = []
+    diary_health = []
+    if show_diary:
+        act_res = (
+            sb.table("pet_activities")
+            .select("*")
+            .eq("pet_id", share["pet_id"])
+            .order("occurred_at", desc=True)
+            .limit(_DIARY_ACTIVITY_LIMIT)
+            .execute()
+        )
+        diary_activities = [_to_activity(r) for r in (act_res.data or [])]
+
+        limit_date = (date.today() + timedelta(days=_DIARY_HEALTH_WINDOW_DAYS)).isoformat()
+        health_res = (
+            sb.table("pet_health_records")
+            .select("*")
+            .eq("pet_id", share["pet_id"])
+            .not_.is_("next_due_date", "null")
+            .lte("next_due_date", limit_date)
+            .order("next_due_date", desc=False)
+            .execute()
+        )
+        diary_health = [_to_health(r) for r in (health_res.data or [])]
+
     return CareProfile(
         pet_name=pet["name"],
         species=pet["species"],
@@ -166,4 +201,7 @@ def get_care(token: str) -> CareProfile:
         vet_phone=prof.get("vet_phone"),
         owner_phone=owner_phone,
         expires_at=share["expires_at"],
+        show_diary=show_diary,
+        diary_activities=diary_activities,
+        diary_health=diary_health,
     )

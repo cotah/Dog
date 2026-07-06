@@ -7,6 +7,8 @@ from typing import Literal
 
 from pydantic import BaseModel
 
+from app.schemas.diary import Activity, HealthRecord
+
 # Duracoes permitidas para o link (mapeadas para dias no service).
 CareDuration = Literal["3d", "1w", "2w", "1mo"]
 
@@ -14,6 +16,7 @@ CareDuration = Literal["3d", "1w", "2w", "1mo"]
 class CareShareCreate(BaseModel):
     pet_id: str
     duration: CareDuration = "1w"
+    show_diary: bool = False  # mostrar diario read-only no care link (opt-in)
 
 
 class CareShare(BaseModel):
@@ -22,6 +25,7 @@ class CareShare(BaseModel):
     token: str
     expires_at: str
     is_active: bool = True
+    show_diary: bool = False
     created_at: str | None = None
     care_url: str | None = None
 
@@ -60,3 +64,7 @@ class CareProfile(BaseModel):
     owner_phone: str | None = None        # SEMPRE visivel no care link (o objetivo)
     # validade (para mostrar ao carer)
     expires_at: str | None = None
+    # diario read-only (so se o dono ativou show_diary) — Etapa 27.5
+    show_diary: bool = False
+    diary_activities: list[Activity] = []  # ultimas 10
+    diary_health: list[HealthRecord] = []  # next_due_date nos proximos 60 dias

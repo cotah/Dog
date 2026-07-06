@@ -27,6 +27,7 @@ export function ShareWithCarerModal({
   const t = useTranslations("care");
   const locale = useLocale();
   const [duration, setDuration] = useState<CareDuration>("1w");
+  const [showDiary, setShowDiary] = useState(false);
   const [shares, setShares] = useState<CareShare[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -44,7 +45,7 @@ export function ShareWithCarerModal({
     setCreating(true);
     setError(null);
     try {
-      const share = await createCareShare(petId, duration);
+      const share = await createCareShare(petId, duration, showDiary);
       setShares((prev) => [share, ...prev]);
     } catch {
       setError(t("createError"));
@@ -111,6 +112,31 @@ export function ShareWithCarerModal({
           ))}
         </div>
 
+        {/* Toggle: partilhar o diario (read-only) com o carer. Default off. */}
+        <button
+          type="button"
+          onClick={() => setShowDiary((v) => !v)}
+          className="mt-3 flex w-full items-center gap-3 rounded-input border border-slate-200 p-3 text-left"
+        >
+          <span
+            className={`relative h-6 w-10 shrink-0 rounded-full transition-colors ${
+              showDiary ? "bg-taloa-primary" : "bg-slate-300"
+            }`}
+          >
+            <span
+              className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${
+                showDiary ? "translate-x-[1.125rem]" : "translate-x-0.5"
+              }`}
+            />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-medium text-slate-700">
+              {t("shareDiary")}
+            </span>
+            <span className="block text-xs text-slate-400">{t("shareDiaryHint")}</span>
+          </span>
+        </button>
+
         <button
           type="button"
           onClick={onCreate}
@@ -142,6 +168,11 @@ export function ShareWithCarerModal({
                   <p className="truncate text-xs text-slate-500">{s.care_url}</p>
                   <p className="text-xs text-slate-400">
                     {t("validUntil", { date: fmt(s.expires_at) })}
+                    {s.show_diary && (
+                      <span className="ml-1.5 rounded-badge bg-taloa-primary/10 px-1.5 py-0.5 text-[10px] font-medium text-taloa-primary">
+                        {t("diaryOn")}
+                      </span>
+                    )}
                   </p>
                 </div>
                 <button

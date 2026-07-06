@@ -1,8 +1,15 @@
 "use client";
 
-import { AlertTriangle, Phone, Stethoscope } from "lucide-react";
+import { AlertTriangle, BookOpen, Phone, Stethoscope } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
+import {
+  ActivityIcon,
+  daysUntil,
+  fmtDate,
+  healthStatus,
+  STATUS_CLASSES,
+} from "@/components/owner/diary/shared";
 import { Link } from "@/i18n/navigation";
 import type { CareProfile } from "@/types/care";
 
@@ -26,6 +33,7 @@ function Field({ label, value }: { label: string; value: string | null | undefin
 // Vista do carer (sitter/hotel/vet) — perfil completo. Distinta do /t publico.
 export function CarerView({ care }: { care: CareProfile }) {
   const t = useTranslations("care");
+  const td = useTranslations("diary");
   const locale = useLocale();
 
   const basics = [
@@ -114,6 +122,87 @@ export function CarerView({ care }: { care: CareProfile }) {
           <Field label={t("humidity")} value={care.humidity_notes} />
           <Field label={t("lighting")} value={care.lighting_notes} />
           <Field label={t("handling")} value={care.handling_notes} />
+        </div>
+      )}
+
+      {/* Pet Diary (read-only) — so se o dono ativou show_diary */}
+      {care.show_diary && (
+        <div className="flex flex-col gap-3 rounded-card bg-white p-5 shadow-sm">
+          <div className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4 text-taloa-primary" />
+            <h2 className="text-sm font-bold text-taloa-primary">{t("diaryTitle")}</h2>
+            <span className="ml-auto rounded-badge bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-400">
+              {t("readOnly")}
+            </span>
+          </div>
+
+          {/* Proximos health records (vacinas, etc) */}
+          {care.diary_health.length > 0 && (
+            <div>
+              <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                {t("diaryHealth")}
+              </p>
+              <ul className="flex flex-col gap-1.5">
+                {care.diary_health.map((h) => {
+                  const st = healthStatus(h.next_due_date);
+                  const days = daysUntil(h.next_due_date);
+                  return (
+                    <li
+                      key={h.id}
+                      className="flex items-center gap-2 rounded-input border border-slate-100 px-2.5 py-1.5"
+                    >
+                      <span className="min-w-0 flex-1 truncate text-sm text-slate-700">
+                        {h.title}
+                      </span>
+                      {st && days !== null && (
+                        <span
+                          className={`shrink-0 rounded-badge px-2 py-0.5 text-[10px] font-medium ${STATUS_CLASSES[st]}`}
+                        >
+                          {st === "overdue"
+                            ? td("overdue", { count: Math.abs(days) })
+                            : days === 0
+                              ? td("dueToday")
+                              : td("dueIn", { count: days })}
+                        </span>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+
+          {/* Atividades recentes */}
+          {care.diary_activities.length > 0 ? (
+            <div>
+              <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                {t("diaryRecent")}
+              </p>
+              <ul className="flex flex-col gap-1.5">
+                {care.diary_activities.map((a) => (
+                  <li key={a.id} className="flex items-center gap-2.5">
+                    <span className="text-taloa-primary">
+                      <ActivityIcon type={a.activity_type} />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm text-slate-700">
+                        {td(`types.${a.activity_type}`)}
+                        {a.duration_minutes ? ` · ${a.duration_minutes} min` : ""}
+                      </p>
+                      <p className="truncate text-xs text-slate-400">
+                        {fmtDate(a.occurred_at)}
+                        {a.notes ? ` · ${a.notes}` : ""}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            care.diary_health.length === 0 && (
+              <p className="text-sm text-slate-400">{td("emptyDiary")}</p>
+            )
+          )}
         </div>
       )}
 

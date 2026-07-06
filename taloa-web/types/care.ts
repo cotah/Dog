@@ -1,5 +1,7 @@
 // Pet Sitter Share (Etapa 25). Care link mostra o perfil completo (medicacao,
 // notas privadas, telefone do dono) — NUNCA endereco/email.
+import type { Activity, HealthRecord } from "@/types/diary";
+
 export type CareDuration = "3d" | "1w" | "2w" | "1mo";
 
 export interface CareShare {
@@ -7,6 +9,7 @@ export interface CareShare {
   token: string;
   expires_at: string;
   is_active: boolean;
+  show_diary: boolean;
   created_at: string | null;
   care_url: string | null;
 }
@@ -40,4 +43,8 @@ export interface CareProfile {
   vet_phone: string | null;
   owner_phone: string | null;
   expires_at: string | null;
+  // diario read-only (so se o dono ativou show_diary)
+  show_diary: boolean;
+  diary_activities: Activity[];
+  diary_health: HealthRecord[];
 }

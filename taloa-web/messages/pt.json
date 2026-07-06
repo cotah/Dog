@@ -103,7 +103,14 @@
     "metaTitle": "Perfil de cuidado do pet — TALOA",
     "metaDescription": "Um link de cuidado temporário da TALOA.",
     "expiredTitle": "Link expirado ou inválido",
-    "expiredBody": "Este link de cuidado já não está ativo. Peça um novo ao dono."
+    "expiredBody": "Este link de cuidado já não está ativo. Peça um novo ao dono.",
+    "shareDiary": "Partilhar diário com o cuidador",
+    "shareDiaryHint": "Deixe o cuidador ver as atividades recentes e vacinas a vencer — só leitura.",
+    "diaryOn": "Diário",
+    "diaryTitle": "Diário do Pet",
+    "diaryHealth": "Saúde a vencer",
+    "diaryRecent": "Atividade recente",
+    "readOnly": "Só leitura"
   },
   "tag": {
     "lostTitle": "{name} está perdido — TALOA",
