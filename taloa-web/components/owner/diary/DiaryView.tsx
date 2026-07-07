@@ -24,7 +24,9 @@ import type {
 import { AddActivityModal } from "./AddActivityModal";
 import { HealthModal } from "./HealthModal";
 import { SheddingModal } from "./SheddingModal";
+import { CareGuideView } from "@/components/owner/care-guide/CareGuideView";
 import { TravelView } from "@/components/owner/travel/TravelView";
+import { isExoticSpecies } from "@/types/care-guide";
 import {
   ActivityIcon,
   daysUntil,
@@ -34,7 +36,7 @@ import {
   STATUS_CLASSES,
 } from "./shared";
 
-type Tab = "diary" | "health" | "shedding" | "travel" | "timeline";
+type Tab = "diary" | "health" | "shedding" | "travel" | "careGuide" | "timeline";
 
 export function DiaryView({
   petId,
@@ -79,7 +81,7 @@ export function DiaryView({
     load();
   }, [load]);
 
-  const tabs: Tab[] = ["diary", "health", ...(sheddingCfg ? (["shedding"] as Tab[]) : []), "travel", "timeline"];
+  const tabs: Tab[] = ["diary", "health", ...(sheddingCfg ? (["shedding"] as Tab[]) : []), "travel", ...(isExoticSpecies(species) ? (["careGuide"] as Tab[]) : []), "timeline"];
 
   return (
     <div>
@@ -139,6 +141,7 @@ export function DiaryView({
             />
           )}
           {tab === "travel" && <TravelView petId={petId} />}
+          {tab === "careGuide" && <CareGuideView petId={petId} />}
           {tab === "timeline" && (
             <TimelineTab activities={activities} health={health} shedding={shedding} />
           )}
