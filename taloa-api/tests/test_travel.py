@@ -157,3 +157,41 @@ def test_pdf_endpoint(as_owner, fake_sb, monkeypatch):
     assert r.status_code == 200
     assert r.headers["content-type"] == "application/pdf"
     assert r.content[:4] == b"%PDF"
+
+
+def test_patch_item_of_another_trip_404(as_owner, fake_sb, monkeypatch):
+    _seed(fake_sb, monkeypatch)
+    trip_a = _create_trip(as_owner).json()
+    trip_b = _create_trip(as_owner, travel_type="car", scope="domestic").json()
+    item_b = trip_b["items"][0]["id"]
+    r = as_owner.patch(f"/v1/trips/{trip_a['id']}/items/{item_b}", json={"is_checked": True})
+    assert r.status_code == 404
+
+
+def test_invalid_travel_type_422(as_owner, fake_sb, monkeypatch):
+    _seed(fake_sb, monkeypatch)
+    r = _create_trip(as_owner, travel_type="boat")
+    assert r.status_code == 422
+
+
+def test_custom_item_on_other_owners_trip_403(as_other, fake_sb, monkeypatch):
+    _seed(fake_sb, monkeypatch)
+    fake_sb.store["pet_trips"] = [{
+        "id": "trip-1", "pet_id": "pet-1", "owner_id": "owner-1",
+        "travel_type": "car", "scope": "domestic", "travel_date": "2026-09-01",
+    }]
+    fake_sb.store["subscriptions"].append({
+        "id": "sub-2", "user_id": "owner-2", "status": "active",
+        "plan": {"name": "plus"}, "created_at": "2026-01-01T00:00:00+00:00",
+    })
+    r = as_other.post("/v1/trips/trip-1/items", json={"label": "X"})
+    assert r.status_code == 403
+
+
+def test_pdf_with_unicode_title_does_not_crash(as_owner, fake_sb, monkeypatch):
+    _seed(fake_sb, monkeypatch)
+    trip = _create_trip(as_owner, title="Férias 🐕 em São Paulo").json()
+    as_owner.post(f"/v1/trips/{trip['id']}/items", json={"label": "Coleira nova 🎾"})
+    r = as_owner.get(f"/v1/trips/{trip['id']}/pdf")
+    assert r.status_code == 200
+    assert r.content[:4] == b"%PDF"

@@ -6,7 +6,7 @@ itens custom guardam label (texto livre do dono). PDF em ingles na v1.
 Conteudo orientativo de preparacao de viagem — sem diagnostico/prescricao.
 """
 import io
-from datetime import date, timedelta
+from datetime import timedelta
 
 from fastapi import HTTPException, status
 from reportlab.lib.colors import HexColor
@@ -235,6 +235,7 @@ def list_trips(user: CurrentUser, pet_id: str) -> list[TripSummary]:
         .execute()
     )
     out = []
+    # 1 query por viagem (poucas viagens por dono) — legibilidade > otimizacao aqui.
     for trip in res.data or []:
         rows = _trip_items(sb, trip["id"])
         checked = sum(1 for r in rows if r.get("is_checked"))
@@ -342,6 +343,11 @@ def delete_item(user: CurrentUser, trip_id: str, item_id: str) -> None:
 
 
 # ── PDF (A4, ingles na v1 — padrao visual do card_service) ──
+def _pdf_safe(text: str) -> str:
+    """Helvetica so cobre cp1252; substitui o resto para nao dar 500."""
+    return text.encode("cp1252", "replace").decode("cp1252")
+
+
 def trip_pdf(user: CurrentUser, trip_id: str) -> bytes:
     sb = get_service_client()
     trip = _own_trip_or_403(sb, user, trip_id)
@@ -362,7 +368,7 @@ def trip_pdf(user: CurrentUser, trip_id: str) -> bytes:
     y -= 9 * mm
     c.setFillColor(INK)
     c.setFont("Helvetica-Bold", 13)
-    title = trip.get("title") or f"{pet['name']} — {trip['travel_type']}"
+    title = _pdf_safe(trip.get("title") or f"{pet['name']} — {trip['travel_type']}")
     c.drawString(20 * mm, y, title)
     y -= 6 * mm
     c.setFillColor(MUTED)
@@ -370,7 +376,7 @@ def trip_pdf(user: CurrentUser, trip_id: str) -> bytes:
     meta = f"{pet['name']} · {trip['travel_type']} · {trip['scope']} · {trip['travel_date']}"
     if trip.get("destination"):
         meta += f" · {trip['destination']}"
-    c.drawString(20 * mm, y, meta)
+    c.drawString(20 * mm, y, _pdf_safe(meta))
     y -= 10 * mm
 
     current_section = None
@@ -380,6 +386,9 @@ def trip_pdf(user: CurrentUser, trip_id: str) -> bytes:
             y = h - 20 * mm
         if r["section"] != current_section:
             current_section = r["section"]
+            if y < 40 * mm:  # header nunca fica orfao no fim da pagina
+                c.showPage()
+                y = h - 20 * mm
             y -= 3 * mm
             c.setFillColor(BRAND)
             c.setFont("Helvetica-Bold", 12)
@@ -391,7 +400,7 @@ def trip_pdf(user: CurrentUser, trip_id: str) -> bytes:
             text += f"  (by {r['due_date']})"
         c.setFillColor(INK)
         c.setFont("Helvetica", 10)
-        c.drawString(20 * mm, y, f"{box}  {text}")
+        c.drawString(20 * mm, y, f"{box}  {_pdf_safe(text)}")
         y -= 6 * mm
 
     c.setFillColor(MUTED)
