@@ -24,6 +24,7 @@ import type {
 import { AddActivityModal } from "./AddActivityModal";
 import { HealthModal } from "./HealthModal";
 import { SheddingModal } from "./SheddingModal";
+import { TravelView } from "@/components/owner/travel/TravelView";
 import {
   ActivityIcon,
   daysUntil,
@@ -33,7 +34,7 @@ import {
   STATUS_CLASSES,
 } from "./shared";
 
-type Tab = "diary" | "health" | "shedding" | "timeline";
+type Tab = "diary" | "health" | "shedding" | "travel" | "timeline";
 
 export function DiaryView({
   petId,
@@ -78,7 +79,7 @@ export function DiaryView({
     load();
   }, [load]);
 
-  const tabs: Tab[] = ["diary", "health", ...(sheddingCfg ? (["shedding"] as Tab[]) : []), "timeline"];
+  const tabs: Tab[] = ["diary", "health", ...(sheddingCfg ? (["shedding"] as Tab[]) : []), "travel", "timeline"];
 
   return (
     <div>
@@ -137,6 +138,7 @@ export function DiaryView({
               onClose={(r) => setSheddingModal(r)}
             />
           )}
+          {tab === "travel" && <TravelView petId={petId} />}
           {tab === "timeline" && (
             <TimelineTab activities={activities} health={health} shedding={shedding} />
           )}
