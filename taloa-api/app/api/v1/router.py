@@ -17,6 +17,7 @@ from app.api.v1.routes import (
     pets,
     scans,
     tags,
+    trips,
     uploads,
     vets,
     webhooks,
@@ -30,6 +31,7 @@ api_router.include_router(uploads.router)
 api_router.include_router(found.router)
 api_router.include_router(owner.router)
 api_router.include_router(pets.router)
+api_router.include_router(trips.router)
 api_router.include_router(leads.router)
 api_router.include_router(admin.router)
 api_router.include_router(admin_tags.router)
