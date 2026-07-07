@@ -38,6 +38,8 @@ export function TripChecklist({
   const [items, setItems] = useState<ChecklistItem[]>(trip.items);
   const [newLabel, setNewLabel] = useState("");
   const [busy, setBusy] = useState(false);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [actionError, setActionError] = useState(false);
 
   const checked = items.filter((i) => i.is_checked).length;
 
@@ -46,8 +48,17 @@ export function TripChecklist({
   }
 
   async function onToggle(item: ChecklistItem) {
-    const updated = await toggleItem(trip.id, item.id, !item.is_checked);
-    setItems((prev) => prev.map((i) => (i.id === item.id ? updated : i)));
+    if (togglingId) return;
+    setTogglingId(item.id);
+    setActionError(false);
+    try {
+      const updated = await toggleItem(trip.id, item.id, !item.is_checked);
+      setItems((prev) => prev.map((i) => (i.id === item.id ? updated : i)));
+    } catch {
+      setActionError(true);
+    } finally {
+      setTogglingId(null);
+    }
   }
 
   async function onAdd(e: React.FormEvent) {
@@ -59,20 +70,30 @@ export function TripChecklist({
       const item = await addCustomItem(trip.id, label);
       setItems((prev) => [...prev, item]);
       setNewLabel("");
+    } catch {
+      setActionError(true);
     } finally {
       setBusy(false);
     }
   }
 
   async function onRemove(item: ChecklistItem) {
-    await deleteItem(trip.id, item.id);
-    setItems((prev) => prev.filter((i) => i.id !== item.id));
+    try {
+      await deleteItem(trip.id, item.id);
+      setItems((prev) => prev.filter((i) => i.id !== item.id));
+    } catch {
+      setActionError(true);
+    }
   }
 
   async function onDeleteTrip() {
     if (!window.confirm(t("confirmDelete"))) return;
-    await deleteTrip(trip.id);
-    onDeleted();
+    try {
+      await deleteTrip(trip.id);
+      onDeleted();
+    } catch {
+      setActionError(true);
+    }
   }
 
   return (
@@ -86,7 +107,7 @@ export function TripChecklist({
         </button>
         <div className="flex gap-2">
           <button
-            onClick={() => downloadTripPdf(trip.id)}
+            onClick={() => downloadTripPdf(trip.id).catch(() => setActionError(true))}
             className="flex items-center gap-1 rounded-input border border-slate-200 px-3 py-1.5 text-sm text-slate-600"
           >
             <FileDown className="h-4 w-4" /> {t("downloadPdf")}
@@ -104,6 +125,12 @@ export function TripChecklist({
         {t("progress", { checked, total: items.length })}
       </p>
 
+      {actionError && (
+        <p className="mb-3 rounded-input bg-red-50 px-3 py-2 text-sm text-red-600">
+          {t("actionError")}
+        </p>
+      )}
+
       {SECTIONS.map((section) => {
         const sectionItems = items.filter((i) => i.section === section);
         if (!sectionItems.length) return null;
@@ -120,19 +147,22 @@ export function TripChecklist({
                     key={item.id}
                     className="group flex items-center gap-2 rounded-input px-2 py-1.5 hover:bg-slate-50"
                   >
-                    <input
-                      type="checkbox"
-                      checked={item.is_checked}
-                      onChange={() => onToggle(item)}
-                      className="h-4 w-4 accent-taloa-primary"
-                    />
-                    <span
-                      className={`flex-1 text-sm ${
-                        item.is_checked ? "text-slate-400 line-through" : "text-slate-700"
-                      }`}
-                    >
-                      {itemText(item)}
-                    </span>
+                    <label className="flex flex-1 cursor-pointer items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={item.is_checked}
+                        onChange={() => onToggle(item)}
+                        disabled={togglingId === item.id}
+                        className="h-4 w-4 accent-taloa-primary"
+                      />
+                      <span
+                        className={`text-sm ${
+                          item.is_checked ? "text-slate-400 line-through" : "text-slate-700"
+                        }`}
+                      >
+                        {itemText(item)}
+                      </span>
+                    </label>
                     {item.due_date && !item.is_checked && (
                       <span
                         className={`rounded px-1.5 py-0.5 text-xs font-medium ${
@@ -151,7 +181,7 @@ export function TripChecklist({
                     <button
                       onClick={() => onRemove(item)}
                       className="invisible text-slate-300 hover:text-red-500 group-hover:visible"
-                      aria-label="remove"
+                      aria-label={t("removeItem")}
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>

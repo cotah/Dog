@@ -27,6 +27,8 @@ export function TravelView({ petId }: { petId: string }) {
   const [loading, setLoading] = useState(true);
   const [locked, setLocked] = useState(false);
   const [adding, setAdding] = useState(false);
+  const [openingId, setOpeningId] = useState<string | null>(null);
+  const [openError, setOpenError] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -62,6 +64,18 @@ export function TravelView({ petId }: { petId: string }) {
     );
   }
 
+  async function openTrip(tripId: string) {
+    setOpeningId(tripId);
+    setOpenError(false);
+    try {
+      setSelected(await getTrip(tripId));
+    } catch {
+      setOpenError(true);
+    } finally {
+      setOpeningId(null);
+    }
+  }
+
   if (selected) {
     return (
       <TripChecklist
@@ -90,6 +104,12 @@ export function TravelView({ petId }: { petId: string }) {
         </button>
       </div>
 
+      {openError && (
+        <p className="mb-3 rounded-input bg-red-50 px-3 py-2 text-sm text-red-600">
+          {t("loadError")}
+        </p>
+      )}
+
       {trips.length === 0 ? (
         <p className="rounded-card border border-dashed border-slate-200 py-10 text-center text-sm text-slate-400">
           {t("empty")}
@@ -104,8 +124,9 @@ export function TravelView({ petId }: { petId: string }) {
             return (
               <li key={trip.id}>
                 <button
-                  onClick={async () => setSelected(await getTrip(trip.id))}
-                  className="w-full rounded-card border border-slate-200 px-4 py-3 text-left hover:border-taloa-primary/40"
+                  onClick={() => openTrip(trip.id)}
+                  disabled={openingId !== null}
+                  className="w-full rounded-card border border-slate-200 px-4 py-3 text-left hover:border-taloa-primary/40 disabled:opacity-60"
                 >
                   <div className="mb-1 flex items-center gap-2">
                     <Icon className="h-4 w-4 text-taloa-primary" />

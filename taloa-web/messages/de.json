@@ -363,6 +363,9 @@
     "dueBy": "bis {date}",
     "overdue": "Überfällig",
     "back": "Alle Reisen",
+    "loadError": "Diese Reise konnte nicht geöffnet werden. Versuch es erneut.",
+    "actionError": "Etwas ist schiefgelaufen. Versuch es erneut.",
+    "removeItem": "Eintrag entfernen",
     "sections": { "documents": "Dokumente", "transport": "Transport", "essentials": "Grundausstattung" },
     "items": {
       "taloa_tag_check": "TALOA-Tag aktiv und lesbar",

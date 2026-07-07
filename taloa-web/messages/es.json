@@ -363,6 +363,9 @@
     "dueBy": "antes del {date}",
     "overdue": "Vencido",
     "back": "Todos los viajes",
+    "loadError": "No se pudo abrir este viaje. Inténtalo de nuevo.",
+    "actionError": "Algo salió mal. Inténtalo de nuevo.",
+    "removeItem": "Eliminar elemento",
     "sections": { "documents": "Documentos", "transport": "Transporte", "essentials": "Esenciales" },
     "items": {
       "taloa_tag_check": "Placa TALOA activa y legible",

@@ -363,6 +363,9 @@
     "dueBy": "avant le {date}",
     "overdue": "En retard",
     "back": "Tous les voyages",
+    "loadError": "Impossible d'ouvrir ce voyage. Réessayez.",
+    "actionError": "Une erreur est survenue. Réessayez.",
+    "removeItem": "Supprimer l'élément",
     "sections": { "documents": "Documents", "transport": "Transport", "essentials": "Essentiels" },
     "items": {
       "taloa_tag_check": "Médaille TALOA active et lisible",

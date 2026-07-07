@@ -363,6 +363,9 @@
     "dueBy": "entro il {date}",
     "overdue": "Scaduto",
     "back": "Tutti i viaggi",
+    "loadError": "Impossibile aprire questo viaggio. Riprova.",
+    "actionError": "Qualcosa è andato storto. Riprova.",
+    "removeItem": "Rimuovi elemento",
     "sections": { "documents": "Documenti", "transport": "Trasporto", "essentials": "Essenziali" },
     "items": {
       "taloa_tag_check": "Medaglietta TALOA attiva e leggibile",

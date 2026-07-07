@@ -363,6 +363,9 @@
     "dueBy": "até {date}",
     "overdue": "Prazo ultrapassado",
     "back": "Todas as viagens",
+    "loadError": "Não foi possível abrir esta viagem. Tente novamente.",
+    "actionError": "Algo deu errado. Tente novamente.",
+    "removeItem": "Remover item",
     "sections": { "documents": "Documentos", "transport": "Transporte", "essentials": "Essenciais" },
     "items": {
       "taloa_tag_check": "Tag TALOA ativa e legível",

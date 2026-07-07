@@ -363,6 +363,9 @@
     "dueBy": "by {date}",
     "overdue": "Overdue",
     "back": "All trips",
+    "loadError": "Could not open this trip. Try again.",
+    "actionError": "Something went wrong. Try again.",
+    "removeItem": "Remove item",
     "sections": { "documents": "Documents", "transport": "Transport", "essentials": "Essentials" },
     "items": {
       "taloa_tag_check": "TALOA tag active and readable",
