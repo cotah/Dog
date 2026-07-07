@@ -72,6 +72,11 @@ class _FakeQuery:
         self._filters.append(lambda r: r.get(column) == value)
         return self
 
+    def in_(self, column, values):
+        vals = list(values)
+        self._filters.append(lambda r: r.get(column) in vals)
+        return self
+
     def gt(self, column, value):
         self._filters.append(lambda r: r.get(column) is not None and r[column] > value)
         return self
